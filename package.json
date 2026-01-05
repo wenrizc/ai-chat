@@ -1,0 +1,13 @@
+{
+  "name": "ai-multi-window-extension",
+  "version": "1.0.0",
+  "description": "支持多窗口对话的AI助手，使用OpenAI兼容接口",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["ai", "chat", "extension"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+  }
+}

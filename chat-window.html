@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Window</title>
+  <link rel="stylesheet" href="chat-window.css">
+</head>
+<body>
+  <div class="chat-container">
+    <!-- 消息列表 -->
+    <div class="messages-container" id="messagesContainer">
+      <div class="welcome-message">
+        <div class="welcome-icon">💬</div>
+        <div class="welcome-text">开始对话</div>
+        <div class="welcome-hint">输入问题，开始与 AI 对话</div>
+      </div>
+    </div>
+
+    <!-- 输入区域 -->
+    <div class="input-container">
+      <textarea
+        id="messageInput"
+        placeholder="输入你的问题..."
+        rows="1"
+      ></textarea>
+      <button id="sendBtn" class="send-btn" title="发送">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 加载指示器 -->
+    <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+      <div class="loading-text">AI 正在思考...</div>
+    </div>
+  </div>
+
+  <script src="marked.min.js"></script>
+  <script src="chat-window.js"></script>
+</body>
+</html>

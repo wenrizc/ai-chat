@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Multi-Window 设置</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 500px;
+      min-height: 450px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #ffffff;
+    }
+
+    .header {
+      padding: 24px 20px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.95;
+    }
+
+    /* 标签页导航 */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e5e5e5;
+      background: #fafafa;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px 20px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #737373;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    /* 标签页内容 */
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #2c2c2c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a4a4a;
+    }
+
+    input[type="password"],
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+      background: #fafafa;
+    }
+
+    input[type="password"]:focus,
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: #667eea;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: #667eea;
+      border: 1px solid #e5e5e5;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-secondary:hover {
+      background: #f8f9fa;
+      border-color: #667eea;
+    }
+
+    .btn-danger {
+      background: #ffffff;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-danger:hover {
+      background: #fef2f2;
+      border-color: #dc2626;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fad2cf;
+    }
+
+    .info-box {
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.6;
+      border: 1px solid #e5e5e5;
+    }
+
+    .info-box a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .info-box a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e5e5;
+      margin: 20px 0;
+    }
+
+    .preset-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .preset-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      background: #f3f4f6;
+      border: 1px solid #e5e5e5;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover {
+      background: #e5e7eb;
+      border-color: #d1d5db;
+    }
+
+    .note {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .footer {
+      padding: 16px 20px;
+      background: #f9fafb;
+      border-top: 1px solid #e5e5e5;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* 历史记录样式 */
+    .history-list {
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .history-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .history-list::-webkit-scrollbar-track {
+      background: #f5f5f5;
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+      background: #d4d4d4;
+      border-radius: 3px;
+    }
+
+    .history-item {
+      padding: 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+
+    .history-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+    }
+
+    .history-item-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .history-item-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .history-item-title {
+      flex: 1;
+      font-weight: 600;
+      color: #262626;
+      font-size: 14px;
+    }
+
+    .history-item-meta {
+      font-size: 12px;
+      color: #737373;
+      margin-bottom: 8px;
+    }
+
+    .history-item-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #9ca3af;
+    }
+
+    .history-empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .bottom-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 16px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    .bottom-actions .btn {
+      flex: 1;
+    }
+
+    /* 对话详情模态框 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #262626;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #737373;
+      cursor: pointer;
+      padding: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #f3f4f6;
+      color: #262626;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .chat-message {
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .chat-message-role {
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .chat-message-content {
+      color: #262626;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #e5e5e5;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* 导出格式选择对话框 */
+    .export-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .export-option {
+      padding: 12px;
+      border: 2px solid #e5e5e5;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .export-option:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .export-option-title {
+      font-weight: 600;
+      color: #262626;
+    }
+
+    .confirm-dialog {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .confirm-dialog-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .confirm-dialog-text {
+      font-size: 14px;
+      color: #262626;
+      margin-bottom: 16px;
+    }
+
+    .confirm-dialog-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>ai chat</h1>
+    <p>ai chat</p>
+  </div>
+
+  <!-- 标签页导航 -->
+  <div class="tabs">
+    <button class="tab active" data-tab="config">配置</button>
+    <button class="tab" data-tab="history">历史记录</button>
+  </div>
+
+  <!-- 配置标签页 -->
+  <div class="tab-content active" id="configTab">
+    <div class="section">
+      <div class="section-title">API 配置</div>
+
+      <div id="status" class="status"></div>
+
+      <div class="input-group">
+        <label for="apiUrl">API 地址</label>
+        <input
+          type="url"
+          id="apiUrl"
+          placeholder="https://api.openai.com/v1"
+        />
+        <div class="preset-buttons">
+          <button class="preset-btn" data-url="https://api.openai.com/v1">OpenAI</button>
+          <button class="preset-btn" data-url="https://api.deepseek.com">DeepSeek</button>
+          <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1">Qwen</button>
+        </div>
+        <div class="note">支持所有 OpenAI 兼容的 API</div>
+      </div>
+
+      <div class="input-group">
+        <label for="apiKey">API 密钥</label>
+        <input
+          type="password"
+          id="apiKey"
+          placeholder="sk-..."
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="modelName">模型名称</label>
+        <input
+          type="text"
+          id="modelName"
+          placeholder="deepseek-chat"
+        />
+      </div>
+
+      <button id="saveBtn" class="btn btn-primary">保存配置</button>
+    </div>
+  </div>
+
+  <!-- 历史记录标签页 -->
+  <div class="tab-content" id="historyTab">
+    <div id="historyStatus" class="status"></div>
+
+    <div class="history-list" id="historyList">
+      <div class="history-empty">
+        <div class="history-empty-icon">💬</div>
+        <div>暂无历史对话</div>
+      </div>
+    </div>
+
+    <div class="bottom-actions">
+      <button id="exportAllBtn" class="btn btn-primary">导出所有</button>
+      <button id="clearAllBtn" class="btn btn-danger">清空历史</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    AI Multi-Window Extension v1.0.0
+  </div>
+
+  <!-- 查看对话详情模态框 -->
+  <div class="modal" id="viewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="viewModalTitle">对话详情</div>
+        <button class="modal-close" data-modal="viewModal">&times;</button>
+      </div>
+      <div class="modal-body" id="viewModalBody">
+        <!-- 对话内容将在这里显示 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 导出格式选择模态框 -->
+  <div class="modal" id="exportModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">选择导出格式</div>
+        <button class="modal-close" data-modal="exportModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="export-options">
+          <div class="export-option" data-format="markdown">
+            <div class="export-option-title">Markdown (.md)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="confirmModal">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="confirm-dialog">
+          <div class="confirm-dialog-icon">⚠️</div>
+          <div class="confirm-dialog-text" id="confirmText">确定要执行此操作吗？</div>
+          <div class="confirm-dialog-actions">
+            <button class="btn btn-secondary" id="confirmCancelBtn">取消</button>
+            <button class="btn btn-danger" id="confirmBtn">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
