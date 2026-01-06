@@ -8,6 +8,7 @@ class ChatWindow {
     this.title = null;   // 对话标题
     this.messages = [];
     this.isLoading = false;
+    this.currentLanguage = 'zh-CN'; // 默认语言
 
     this.elements = {
       messagesContainer: document.getElementById('messagesContainer'),
@@ -19,9 +20,37 @@ class ChatWindow {
     this.init();
   }
 
-  init() {
+  async init() {
+    // 初始化 i18n
+    await initI18n();
+    this.currentLanguage = getCurrentLanguage();
+
+    // 更新页面翻译
+    this.updateTranslations();
+
     this.setupEventListeners();
     this.setupPostMessageListener();
+  }
+
+  // 更新页面翻译
+  updateTranslations() {
+    // 更新带有 data-i18n 属性的元素
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.getAttribute('data-i18n');
+      element.textContent = t(key);
+    });
+
+    // 更新带有 data-i18n-placeholder 属性的元素
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+      const key = element.getAttribute('data-i18n-placeholder');
+      element.placeholder = t(key);
+    });
+
+    // 更新带有 data-i18n-title 属性的元素
+    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+      const key = element.getAttribute('data-i18n-title');
+      element.title = t(key);
+    });
   }
 
   setupEventListeners() {
@@ -58,7 +87,7 @@ class ChatWindow {
         }
 
         // 默认标题
-        this.title = event.data.title || 'AI 对话';
+        this.title = event.data.title || t('chat.windowTitle', { number: 1 });
 
         // 如果有历史消息，加载它们
         if (event.data.historyMessages && Array.isArray(event.data.historyMessages)) {
@@ -106,7 +135,7 @@ class ChatWindow {
 
       const roleText = document.createElement('span');
       roleText.className = 'message-role';
-      roleText.textContent = msg.role === 'user' ? '用户' : 'AI';
+      roleText.textContent = msg.role === 'user' ? t('chat.roleUser') : t('chat.roleAI');
 
       messageHeader.appendChild(avatar);
       messageHeader.appendChild(roleText);
@@ -206,7 +235,7 @@ class ChatWindow {
 
     const roleText = document.createElement('span');
     roleText.className = 'message-role';
-    roleText.textContent = role === 'user' ? '用户' : 'AI';
+    roleText.textContent = role === 'user' ? t('chat.roleUser') : t('chat.roleAI');
 
     messageHeader.appendChild(avatar);
     messageHeader.appendChild(roleText);

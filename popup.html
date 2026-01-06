@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Multi-Window 设置</title>
+  <title>AI Multi-Window Settings</title>
   <style>
     * {
       margin: 0;
@@ -265,6 +265,45 @@
       color: #9ca3af;
     }
 
+    /* 语言选择器样式 */
+    .language-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .language-selector label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a4a4a;
+      white-space: nowrap;
+    }
+
+    .language-select {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .language-select:hover {
+      border-color: #667eea;
+      background: #ffffff;
+    }
+
+    .language-select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
     /* 历史记录样式 */
     .history-list {
       max-height: 350px;
@@ -502,28 +541,37 @@
 </head>
 <body>
   <div class="header">
-    <h1>ai chat</h1>
-    <p>ai chat</p>
+    <h1 data-i18n="popup.title">ai chat</h1>
   </div>
 
   <!-- 标签页导航 -->
   <div class="tabs">
-    <button class="tab active" data-tab="config">配置</button>
-    <button class="tab" data-tab="history">历史记录</button>
+    <button class="tab active" data-tab="config" data-i18n="popup.tabConfig">配置</button>
+    <button class="tab" data-tab="history" data-i18n="popup.tabHistory">历史记录</button>
   </div>
 
   <!-- 配置标签页 -->
   <div class="tab-content active" id="configTab">
     <div class="section">
-      <div class="section-title">API 配置</div>
+      <!-- 语言选择器 -->
+      <div class="language-selector">
+        <label for="languageSelect" data-i18n="popup.language">语言</label>
+        <select id="languageSelect" class="language-select">
+          <option value="zh-CN">简体中文</option>
+          <option value="en-US">English</option>
+        </select>
+      </div>
+
+      <div class="section-title" data-i18n="popup.sectionApiConfig">API 配置</div>
 
       <div id="status" class="status"></div>
 
       <div class="input-group">
-        <label for="apiUrl">API 地址</label>
+        <label for="apiUrl" data-i18n="popup.labelApiUrl">API 地址</label>
         <input
           type="url"
           id="apiUrl"
+          data-i18n-placeholder="popup.placeholderApiUrl"
           placeholder="https://api.openai.com/v1"
         />
         <div class="preset-buttons">
@@ -531,28 +579,30 @@
           <button class="preset-btn" data-url="https://api.deepseek.com">DeepSeek</button>
           <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1">Qwen</button>
         </div>
-        <div class="note">支持所有 OpenAI 兼容的 API</div>
+        <div class="note" data-i18n="popup.noteApiCompatibility">支持所有 OpenAI 兼容的 API</div>
       </div>
 
       <div class="input-group">
-        <label for="apiKey">API 密钥</label>
+        <label for="apiKey" data-i18n="popup.labelApiKey">API 密钥</label>
         <input
           type="password"
           id="apiKey"
-          placeholder="sk-..."
+          data-i18n-placeholder="popup.placeholderApiKey"
+          placeholder=""
         />
       </div>
 
       <div class="input-group">
-        <label for="modelName">模型名称</label>
+        <label for="modelName" data-i18n="popup.labelModelName">模型名称</label>
         <input
           type="text"
           id="modelName"
-          placeholder="deepseek-chat"
+          data-i18n-placeholder="popup.placeholderModelName"
+          placeholder=""
         />
       </div>
 
-      <button id="saveBtn" class="btn btn-primary">保存配置</button>
+      <button id="saveBtn" class="btn btn-primary" data-i18n="popup.btnSaveConfig">保存配置</button>
     </div>
   </div>
 
@@ -563,13 +613,13 @@
     <div class="history-list" id="historyList">
       <div class="history-empty">
         <div class="history-empty-icon">💬</div>
-        <div>暂无历史对话</div>
+        <div data-i18n="history.empty">暂无历史对话</div>
       </div>
     </div>
 
     <div class="bottom-actions">
-      <button id="exportAllBtn" class="btn btn-primary">导出所有</button>
-      <button id="clearAllBtn" class="btn btn-danger">清空历史</button>
+      <button id="exportAllBtn" class="btn btn-primary" data-i18n="history.btnExportAll">导出所有</button>
+      <button id="clearAllBtn" class="btn btn-danger" data-i18n="history.btnClearHistory">清空历史</button>
     </div>
   </div>
 
@@ -581,7 +631,7 @@
   <div class="modal" id="viewModal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title" id="viewModalTitle">对话详情</div>
+        <div class="modal-title" id="viewModalTitle" data-i18n="history.modalViewTitle">对话详情</div>
         <button class="modal-close" data-modal="viewModal">&times;</button>
       </div>
       <div class="modal-body" id="viewModalBody">
@@ -594,13 +644,13 @@
   <div class="modal" id="exportModal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title">选择导出格式</div>
+        <div class="modal-title" data-i18n="history.modalExportTitle">选择导出格式</div>
         <button class="modal-close" data-modal="exportModal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="export-options">
           <div class="export-option" data-format="markdown">
-            <div class="export-option-title">Markdown (.md)</div>
+            <div class="export-option-title" data-i18n="history.exportFormatMarkdown">Markdown (.md)</div>
           </div>
         </div>
       </div>
@@ -614,14 +664,15 @@
           <div class="confirm-dialog-icon">⚠️</div>
           <div class="confirm-dialog-text" id="confirmText">确定要执行此操作吗？</div>
           <div class="confirm-dialog-actions">
-            <button class="btn btn-secondary" id="confirmCancelBtn">取消</button>
-            <button class="btn btn-danger" id="confirmBtn">确定</button>
+            <button class="btn btn-secondary" id="confirmCancelBtn" data-i18n="history.btnCancel">取消</button>
+            <button class="btn btn-danger" id="confirmBtn" data-i18n="history.btnConfirm">确定</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-    <script src="popup.js"></script>
+  <script src="i18n.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>

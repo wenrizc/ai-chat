@@ -24,7 +24,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["chat-window.html", "chat-window.js"],
+      "resources": ["chat-window.html", "chat-window.js", "i18n.js", "marked.min.js"],
       "matches": ["<all_urls>"]
     }
   ],

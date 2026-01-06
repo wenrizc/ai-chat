@@ -5,14 +5,94 @@ class AIMultiWindow {
   constructor() {
     this.windows = new Map();
     this.windowCounter = 0;
+    this.currentLanguage = 'zh-CN'; // 默认语言
     this.init();
   }
 
-  init() {
+  async init() {
+    // 尝试加载语言设置
+    try {
+      const result = await chrome.storage.local.get(['language']);
+      if (result.language && this.isSupportedLanguage(result.language)) {
+        this.currentLanguage = result.language;
+      }
+    } catch (error) {
+      console.warn('Failed to load language preference:', error);
+    }
+
     this.setupTextSelection();
     this.setupKeyboardShortcuts();
     this.setupRuntimeMessageListener();
+    this.setupLanguageChangeListener();
     console.log('AI Multi-Window Extension initialized');
+  }
+
+  // 设置语言变化监听
+  setupLanguageChangeListener() {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local' && changes.language) {
+        const newLanguage = changes.language.newValue;
+        if (this.isSupportedLanguage(newLanguage)) {
+          this.currentLanguage = newLanguage;
+        }
+
+        // 更新所有现有工具栏
+        this.updateAllToolbars();
+      }
+    });
+  }
+
+  // 更新所有工具栏的语言
+  updateAllToolbars() {
+    const toolbar = document.querySelector('.ai-selection-toolbar');
+    if (toolbar) {
+      // 移除现有工具栏，下次选择文本时会用新语言重新创建
+      toolbar.remove();
+    }
+  }
+
+  // 获取翻译文本
+  isSupportedLanguage(langCode) {
+    return langCode === 'zh-CN' || langCode === 'en-US';
+  }
+
+  t(key, params = {}) {
+    // 如果 i18n 已加载，使用它；否则使用简化版本
+    if (typeof window !== 'undefined' && window.t) {
+      return window.t(key, params);
+    }
+
+    // 简化版本的翻译（仅作为回退）
+    const translations = {
+      'zh-CN': {
+        'content.toolbarChat': '在新的对话窗口中讨论',
+        'content.toolbarBtnChat': 'AI对话',
+        'content.btnMinimize': '最小化',
+        'content.btnClose': '关闭',
+        'chat.windowTitle': '{number}'
+      },
+      'en-US': {
+        'content.toolbarChat': 'Discuss in a new chat window',
+        'content.toolbarBtnChat': 'AI Chat',
+        'content.btnMinimize': 'Minimize',
+        'content.btnClose': 'Close',
+        'chat.windowTitle': '{number}'
+      }
+    };
+
+    let value = translations[this.currentLanguage] && translations[this.currentLanguage][key];
+    if (!value) {
+      value = translations['zh-CN'][key] || key;
+    }
+
+    // 处理参数替换
+    if (typeof value === 'string' && params) {
+      Object.keys(params).forEach(paramKey => {
+        value = value.replace(`{${paramKey}}`, params[paramKey]);
+      });
+    }
+
+    return value;
   }
 
   // 设置文本选择监听
@@ -86,11 +166,11 @@ class AIMultiWindow {
     const toolbar = document.createElement('div');
     toolbar.className = 'ai-selection-toolbar';
     toolbar.innerHTML = `
-      <button class="ai-toolbar-btn" data-action="chat" title="在新的对话窗口中讨论">
+      <button class="ai-toolbar-btn" data-action="chat" title="${this.t('content.toolbarChat')}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
           <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
         </svg>
-        <span>AI对话</span>
+        <span>${this.t('content.toolbarBtnChat')}</span>
       </button>
     `;
 
@@ -134,15 +214,15 @@ class AIMultiWindow {
     windowContainer.innerHTML = `
       <div class="ai-window-header">
         <div class="ai-window-title">
-          <span class="ai-window-number">${title || `AI 对话 #${this.windowCounter}`}</span>
+          <span class="ai-window-number">${title || this.t('chat.windowTitle', { number: this.windowCounter })}</span>
         </div>
         <div class="ai-window-controls">
-          <button class="ai-window-btn ai-minimize-btn" title="最小化">
+          <button class="ai-window-btn ai-minimize-btn" title="${this.t('content.btnMinimize')}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H5v-2h14v2z"/>
             </svg>
           </button>
-          <button class="ai-window-btn ai-close-btn" title="关闭">
+          <button class="ai-window-btn ai-close-btn" title="${this.t('content.btnClose')}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>

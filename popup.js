@@ -4,6 +4,7 @@
 // DOM 元素
 const elements = {
   // 配置相关
+  languageSelect: document.getElementById('languageSelect'),
   apiUrl: document.getElementById('apiUrl'),
   apiKey: document.getElementById('apiKey'),
   modelName: document.getElementById('modelName'),
@@ -36,12 +37,60 @@ let currentChatId = null;
 let pendingAction = null;
 
 // 初始化
-function init() {
+async function init() {
+  // 初始化 i18n
+  await initI18n();
+
   setupTabs();
   setupConfigHandlers();
   setupHistoryHandlers();
+  setupLanguageHandler();
   loadConfig();
   loadHistory();
+
+  // 更新页面翻译
+  updatePageTranslations();
+}
+
+// 设置语言切换处理器
+function setupLanguageHandler() {
+  elements.languageSelect.addEventListener('change', async (e) => {
+    const newLang = e.target.value;
+    const success = await setLanguage(newLang);
+    if (success) {
+      updatePageTranslations();
+      loadHistory(); // 重新加载历史记录以更新动态内容
+    }
+  });
+
+  // 设置当前语言
+  elements.languageSelect.value = getCurrentLanguage();
+}
+
+// 更新页面翻译（扩展版本，支持 placeholder）
+function updatePageTranslationsExtended() {
+  // 更新带有 data-i18n 属性的元素
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    const translation = t(key);
+
+    if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+      element.placeholder = translation;
+    } else {
+      element.textContent = translation;
+    }
+  });
+
+  // 更新带有 data-i18n-placeholder 属性的元素
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    element.placeholder = t(key);
+  });
+
+  // 更新语言选择器的值
+  if (elements.languageSelect) {
+    elements.languageSelect.value = getCurrentLanguage();
+  }
 }
 
 // 设置标签页切换
@@ -90,7 +139,7 @@ function setupHistoryHandlers() {
   });
 
   elements.clearAllBtn.addEventListener('click', () => {
-    showConfirmDialog('确定要清空所有历史记录吗？此操作不可撤销。', async () => {
+    showConfirmDialog(t('history.confirmDeleteAll'), async () => {
       await clearAllHistory();
     });
   });
@@ -137,7 +186,7 @@ async function loadConfig() {
 
     elements.apiUrl.value = result.apiUrl || 'https://api.openai.com/v1';
     elements.apiKey.value = result.apiKey || '';
-    elements.modelName.value = result.modelName || 'deepseek-chat';
+    elements.modelName.value = result.modelName || '';
   } catch (error) {
     console.error('Failed to load config:', error);
   }
@@ -152,26 +201,26 @@ async function saveConfig() {
   };
 
   if (!config.apiUrl) {
-    showStatus('请输入 API 地址', 'error');
+    showStatus(t('popup.labelApiUrl') + ' ' + t('common.error'), 'error');
     return;
   }
 
   if (!config.apiKey) {
-    showStatus('请输入 API 密钥', 'error');
+    showStatus(t('popup.labelApiKey') + ' ' + t('common.error'), 'error');
     return;
   }
 
   if (!config.modelName) {
-    showStatus('请输入模型名称', 'error');
+    showStatus(t('popup.labelModelName') + ' ' + t('common.error'), 'error');
     return;
   }
 
   try {
     await chrome.storage.local.set(config);
-    showStatus('配置已保存', 'success');
+    showStatus(t('popup.statusSaved'), 'success');
   } catch (error) {
     console.error('Failed to save config:', error);
-    showStatus('保存配置失败', 'error');
+    showStatus(t('popup.statusError'), 'error');
   }
 }
 
@@ -195,7 +244,7 @@ async function loadHistory() {
       elements.historyList.innerHTML = `
         <div class="history-empty">
           <div class="history-empty-icon">💬</div>
-          <div>暂无历史对话</div>
+          <div data-i18n="history.empty">${t('history.empty')}</div>
         </div>
       `;
       return;
@@ -215,7 +264,7 @@ async function loadHistory() {
 
       if (deleteBtn) {
         deleteBtn.addEventListener('click', () => {
-          showConfirmDialog(`确定要删除对话"${chat.title}"吗？`, async () => {
+          showConfirmDialog(t('history.confirmDeleteItem').replace('{title}', escapeHtml(chat.title)), async () => {
             await deleteChat(chat.chatId);
           });
         });
@@ -233,7 +282,7 @@ async function loadHistory() {
     elements.historyList.innerHTML = `
       <div class="history-empty">
         <div class="history-empty-icon">⚠️</div>
-        <div>加载失败: ${error.message}</div>
+        <div>${t('common.error')}: ${error.message}</div>
       </div>
     `;
   }
@@ -250,12 +299,12 @@ function createHistoryItem(chat) {
         <div class="history-item-title">${escapeHtml(chat.title)}</div>
       </div>
       <div class="history-item-meta">
-        ${timeAgo} · ${chat.messageCount} 条消息
+        ${timeAgo} · ${t('history.messageCount', { count: chat.messageCount })}
       </div>
       <div class="history-item-actions">
-        <button class="btn btn-secondary" id="view-${chat.chatId}">查看</button>
-        <button class="btn btn-secondary" id="export-${chat.chatId}">导出</button>
-        <button class="btn btn-danger" id="delete-${chat.chatId}">删除</button>
+        <button class="btn btn-secondary" id="view-${chat.chatId}">${t('history.btnView')}</button>
+        <button class="btn btn-secondary" id="export-${chat.chatId}">${t('history.btnExport') || '导出'}</button>
+        <button class="btn btn-danger" id="delete-${chat.chatId}">${t('history.btnDelete')}</button>
       </div>
     </div>
   `;
@@ -268,7 +317,7 @@ async function viewChat(chat) {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     if (!tab) {
-      showHistoryStatus('无法获取当前标签页', 'error');
+      showHistoryStatus(t('history.errorGetTab'), 'error');
       return;
     }
 
@@ -284,14 +333,14 @@ async function viewChat(chat) {
     }, (response) => {
       if (chrome.runtime.lastError) {
         console.error('Failed to send message:', chrome.runtime.lastError);
-        showHistoryStatus('无法打开聊天窗口，请确保在支持扩展的页面中使用', 'error');
+        showHistoryStatus(t('history.errorOpenWindow'), 'error');
       } else if (response && response.success) {
-        showHistoryStatus('聊天窗口已打开', 'success');
+        showHistoryStatus(t('history.successWindowOpened'), 'success');
       }
     });
   } catch (error) {
     console.error('Failed to open chat:', error);
-    showHistoryStatus('打开聊天窗口失败: ' + error.message, 'error');
+    showHistoryStatus(t('history.errorOpenFailed') + error.message, 'error');
   }
 }
 
@@ -304,11 +353,11 @@ async function deleteChat(chatId) {
     const newHistory = history.filter(chat => chat.chatId !== chatId);
     await chrome.storage.local.set({ chat_history: newHistory });
 
-    showHistoryStatus('对话已删除', 'success');
+    showHistoryStatus(t('history.successDeleted'), 'success');
     await loadHistory();
   } catch (error) {
     console.error('Failed to delete chat:', error);
-    showHistoryStatus('删除失败', 'error');
+    showHistoryStatus(t('history.errorDeleted'), 'error');
   }
 }
 
@@ -316,11 +365,11 @@ async function deleteChat(chatId) {
 async function clearAllHistory() {
   try {
     await chrome.storage.local.set({ chat_history: [] });
-    showHistoryStatus('历史记录已清空', 'success');
+    showHistoryStatus(t('history.successCleared'), 'success');
     await loadHistory();
   } catch (error) {
     console.error('Failed to clear history:', error);
-    showHistoryStatus('清空失败', 'error');
+    showHistoryStatus(t('history.errorDeleted'), 'error');
   }
 }
 
@@ -344,7 +393,7 @@ async function exportChat() {
       // 导出单个对话
       const chat = history.find(c => c.chatId === currentChatId);
       if (!chat) {
-        showHistoryStatus('对话不存在', 'error');
+        showHistoryStatus(t('history.errorChatNotFound'), 'error');
         return;
       }
 
@@ -361,10 +410,10 @@ async function exportChat() {
     a.click();
     URL.revokeObjectURL(url);
 
-    showHistoryStatus('导出成功', 'success');
+    showHistoryStatus(t('history.successExported'), 'success');
   } catch (error) {
     console.error('Failed to export:', error);
-    showHistoryStatus('导出失败', 'error');
+    showHistoryStatus(t('history.errorExported'), 'error');
   }
 }
 
