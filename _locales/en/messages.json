@@ -1,0 +1,326 @@
+{
+  "extName": {
+    "message": "AI Multi-Window Chat",
+    "description": "Extension name"
+  },
+  "popup__pageTitle": {
+    "message": "AI Multi-Window Settings",
+    "description": "Popup page title"
+  },
+  "extDescription": {
+    "message": "Multi-window AI assistant using OpenAI-compatible APIs",
+    "description": "Extension description"
+  },
+  "popup__title": {
+    "message": "AI Assistant",
+    "description": "Popup page title"
+  },
+  "popup__tabConfig": {
+    "message": "Config",
+    "description": "Configuration tab"
+  },
+  "popup__tabHistory": {
+    "message": "History",
+    "description": "History tab"
+  },
+  "popup__sectionApiConfig": {
+    "message": "API Configuration",
+    "description": "API configuration section title"
+  },
+  "popup__labelApiUrl": {
+    "message": "API URL",
+    "description": "API URL label"
+  },
+  "popup__labelApiKey": {
+    "message": "API Key",
+    "description": "API Key label"
+  },
+  "popup__labelModelName": {
+    "message": "Model Name",
+    "description": "Model Name label"
+  },
+  "popup__placeholderApiUrl": {
+    "message": "https://api.openai.com/v1",
+    "description": "API URL placeholder"
+  },
+  "popup__placeholderApiKey": {
+    "message": "",
+    "description": "API Key placeholder"
+  },
+  "popup__placeholderModelName": {
+    "message": "",
+    "description": "Model Name placeholder"
+  },
+  "popup__btnSaveConfig": {
+    "message": "Save Config",
+    "description": "Save configuration button"
+  },
+  "popup__noteApiCompatibility": {
+    "message": "Supports all OpenAI-compatible APIs",
+    "description": "API compatibility note"
+  },
+  "popup__statusSaved": {
+    "message": "Configuration saved",
+    "description": "Save success message"
+  },
+  "popup__statusError": {
+    "message": "Save failed, please check your input",
+    "description": "Save error message"
+  },
+  "popup__language": {
+    "message": "Language",
+    "description": "Language selector label"
+  },
+  "popup__languageNote": {
+    "message": "Set by browser",
+    "description": "Language note"
+  },
+  "history__title": {
+    "message": "ai chat",
+    "description": "History title"
+  },
+  "history__empty": {
+    "message": "No chat history yet",
+    "description": "Empty history message"
+  },
+  "history__btnExportAll": {
+    "message": "Export All",
+    "description": "Export all button"
+  },
+  "history__btnClearHistory": {
+    "message": "Clear History",
+    "description": "Clear history button"
+  },
+  "history__modalViewTitle": {
+    "message": "Chat Details",
+    "description": "View modal title"
+  },
+  "history__modalExportTitle": {
+    "message": "Select Export Format",
+    "description": "Export modal title"
+  },
+  "history__exportFormatMarkdown": {
+    "message": "Markdown (.md)",
+    "description": "Markdown export option"
+  },
+  "history__btnView": {
+    "message": "View",
+    "description": "View button"
+  },
+  "history__btnExport": {
+    "message": "Export",
+    "description": "Export button"
+  },
+  "history__btnDelete": {
+    "message": "Delete",
+    "description": "Delete button"
+  },
+  "history__btnResume": {
+    "message": "Resume Chat",
+    "description": "Resume button"
+  },
+  "history__confirmDeleteAll": {
+    "message": "Are you sure you want to clear all history?",
+    "description": "Confirm delete all message"
+  },
+  "history__confirmDeleteItem": {
+    "message": "Are you sure you want to delete chat \"$1\"?",
+    "description": "Confirm delete item message with placeholder"
+  },
+  "history__btnConfirm": {
+    "message": "Confirm",
+    "description": "Confirm button"
+  },
+  "history__btnCancel": {
+    "message": "Cancel",
+    "description": "Cancel button"
+  },
+  "history__messageCount": {
+    "message": "$1 messages",
+    "description": "Message count with placeholder"
+  },
+  "history__errorGetTab": {
+    "message": "Unable to get current tab",
+    "description": "Error getting tab"
+  },
+  "history__errorOpenWindow": {
+    "message": "Unable to open chat window. Please make sure you are on a supported page.",
+    "description": "Error opening window"
+  },
+  "history__successWindowOpened": {
+    "message": "Chat window opened",
+    "description": "Success opening window"
+  },
+  "history__errorOpenFailed": {
+    "message": "Failed to open chat window: ",
+    "description": "Failed to open window"
+  },
+  "history__successDeleted": {
+    "message": "Chat deleted",
+    "description": "Success deleted"
+  },
+  "history__errorDeleted": {
+    "message": "Delete failed",
+    "description": "Delete failed"
+  },
+  "history__successCleared": {
+    "message": "History cleared",
+    "description": "History cleared"
+  },
+  "history__successExported": {
+    "message": "Export successful",
+    "description": "Export successful"
+  },
+  "history__errorExported": {
+    "message": "Export failed",
+    "description": "Export failed"
+  },
+  "history__errorChatNotFound": {
+    "message": "Chat not found",
+    "description": "Chat not found"
+  },
+  "chat__welcome": {
+    "message": "Start Chatting",
+    "description": "Welcome message"
+  },
+  "chat__welcomeHint": {
+    "message": "Enter a question to start chatting with AI",
+    "description": "Welcome hint"
+  },
+  "chat__placeholderInput": {
+    "message": "Enter your question...",
+    "description": "Input placeholder"
+  },
+  "chat__btnSend": {
+    "message": "Send",
+    "description": "Send button"
+  },
+  "chat__thinking": {
+    "message": "AI is thinking...",
+    "description": "Thinking indicator"
+  },
+  "chat__windowTitle": {
+    "message": "$1",
+    "description": "Window title with placeholder"
+  },
+  "chat__roleUser": {
+    "message": "User",
+    "description": "User role"
+  },
+  "chat__roleAI": {
+    "message": "AI",
+    "description": "AI role"
+  },
+  "content__toolbarChat": {
+    "message": "Discuss in a new chat window",
+    "description": "Toolbar tooltip"
+  },
+  "content__toolbarBtnChat": {
+    "message": "AI Chat",
+    "description": "Toolbar button text"
+  },
+  "content__btnMinimize": {
+    "message": "Minimize",
+    "description": "Minimize button"
+  },
+  "content__btnClose": {
+    "message": "Close",
+    "description": "Close button"
+  },
+  "common__loading": {
+    "message": "Loading...",
+    "description": "Loading text"
+  },
+  "common__error": {
+    "message": "Error",
+    "description": "Error text"
+  },
+  "common__success": {
+    "message": "Success",
+    "description": "Success text"
+  },
+  "common__cancel": {
+    "message": "Cancel",
+    "description": "Cancel text"
+  },
+  "common__confirm": {
+    "message": "Confirm",
+    "description": "Confirm text"
+  },
+  "export__chatTime": {
+    "message": "**Chat Time**",
+    "description": "Chat time label in export"
+  },
+  "export__messageCount": {
+    "message": "**Message Count**",
+    "description": "Message count label in export"
+  },
+  "export__exportTime": {
+    "message": "**Export Time**",
+    "description": "Export time label in export"
+  },
+  "export__chatCount": {
+    "message": "**Chat Count**",
+    "description": "Chat count label in export"
+  },
+  "export__time": {
+    "message": "**Time**",
+    "description": "Time label in export"
+  },
+  "export__roleUser": {
+    "message": "## 👤 User",
+    "description": "User role in export"
+  },
+  "export__roleAI": {
+    "message": "## 🤖 AI",
+    "description": "AI role in export"
+  },
+  "export__title": {
+    "message": "AI Chat History Summary",
+    "description": "Export title"
+  },
+  "time__justNow": {
+    "message": "Just now",
+    "description": "Relative time - just now"
+  },
+  "time__minutesAgo": {
+    "message": "$1 minutes ago",
+    "description": "Relative time - minutes ago"
+  },
+  "time__hoursAgo": {
+    "message": "$1 hours ago",
+    "description": "Relative time - hours ago"
+  },
+  "time__daysAgo": {
+    "message": "$1 days ago",
+    "description": "Relative time - days ago"
+  },
+  "popup__presetOpenAI": {
+    "message": "OpenAI",
+    "description": "Preset button for OpenAI"
+  },
+  "popup__presetDeepSeek": {
+    "message": "DeepSeek",
+    "description": "Preset button for DeepSeek"
+  },
+  "popup__presetQwen": {
+    "message": "Qwen",
+    "description": "Preset button for Qwen"
+  },
+  "popup__defaultConfirmText": {
+    "message": "Are you sure you want to perform this action?",
+    "description": "Default confirmation dialog text"
+  },
+  "popup__footerVersion": {
+    "message": "AI Multi-Window Extension v$1",
+    "description": "Footer version text with placeholder"
+  },
+  "error__apiConfigMissing": {
+    "message": "API config missing. Please set API Key and Model in settings.",
+    "description": "Error message when API config is missing"
+  },
+  "error__emptyApiResponse": {
+    "message": "Empty response from API. Please try again.",
+    "description": "Error message when API returns empty response"
+  }
+}

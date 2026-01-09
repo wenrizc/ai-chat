@@ -1,0 +1,326 @@
+{
+  "extName": {
+    "message": "AI 多窗口对话",
+    "description": "扩展名称"
+  },
+  "popup__pageTitle": {
+    "message": "AI 多窗口设置",
+    "description": "弹窗页面标题"
+  },
+  "extDescription": {
+    "message": "支持多窗口对话的AI助手，使用OpenAI兼容接口",
+    "description": "扩展描述"
+  },
+  "popup__title": {
+    "message": "AI 助手",
+    "description": "弹窗页面标题"
+  },
+  "popup__tabConfig": {
+    "message": "配置",
+    "description": "配置标签页"
+  },
+  "popup__tabHistory": {
+    "message": "历史记录",
+    "description": "历史记录标签页"
+  },
+  "popup__sectionApiConfig": {
+    "message": "API 配置",
+    "description": "API 配置区域标题"
+  },
+  "popup__labelApiUrl": {
+    "message": "API 地址",
+    "description": "API 地址标签"
+  },
+  "popup__labelApiKey": {
+    "message": "API 密钥",
+    "description": "API 密钥标签"
+  },
+  "popup__labelModelName": {
+    "message": "模型名称",
+    "description": "模型名称标签"
+  },
+  "popup__placeholderApiUrl": {
+    "message": "https://api.openai.com/v1",
+    "description": "API 地址占位符"
+  },
+  "popup__placeholderApiKey": {
+    "message": "",
+    "description": "API 密钥占位符"
+  },
+  "popup__placeholderModelName": {
+    "message": "",
+    "description": "模型名称占位符"
+  },
+  "popup__btnSaveConfig": {
+    "message": "保存配置",
+    "description": "保存配置按钮"
+  },
+  "popup__noteApiCompatibility": {
+    "message": "支持所有 OpenAI 兼容的 API",
+    "description": "API 兼容性说明"
+  },
+  "popup__statusSaved": {
+    "message": "配置已保存",
+    "description": "保存成功消息"
+  },
+  "popup__statusError": {
+    "message": "保存失败，请检查输入",
+    "description": "保存失败消息"
+  },
+  "popup__language": {
+    "message": "语言",
+    "description": "语言选择器标签"
+  },
+  "popup__languageNote": {
+    "message": "由浏览器设置决定",
+    "description": "语言说明"
+  },
+  "history__title": {
+    "message": "ai chat",
+    "description": "历史记录标题"
+  },
+  "history__empty": {
+    "message": "暂无历史对话",
+    "description": "空历史记录消息"
+  },
+  "history__btnExportAll": {
+    "message": "导出所有",
+    "description": "导出所有按钮"
+  },
+  "history__btnClearHistory": {
+    "message": "清空历史",
+    "description": "清空历史按钮"
+  },
+  "history__modalViewTitle": {
+    "message": "对话详情",
+    "description": "查看模态框标题"
+  },
+  "history__modalExportTitle": {
+    "message": "选择导出格式",
+    "description": "导出模态框标题"
+  },
+  "history__exportFormatMarkdown": {
+    "message": "Markdown (.md)",
+    "description": "Markdown 导出选项"
+  },
+  "history__btnView": {
+    "message": "查看",
+    "description": "查看按钮"
+  },
+  "history__btnExport": {
+    "message": "导出",
+    "description": "导出按钮"
+  },
+  "history__btnDelete": {
+    "message": "删除",
+    "description": "删除按钮"
+  },
+  "history__btnResume": {
+    "message": "继续对话",
+    "description": "继续按钮"
+  },
+  "history__confirmDeleteAll": {
+    "message": "确定要清空所有历史记录吗？",
+    "description": "确认删除全部消息"
+  },
+  "history__confirmDeleteItem": {
+    "message": "确定要删除对话\"$1\"吗？",
+    "description": "确认删除项消息（带占位符）"
+  },
+  "history__btnConfirm": {
+    "message": "确定",
+    "description": "确认按钮"
+  },
+  "history__btnCancel": {
+    "message": "取消",
+    "description": "取消按钮"
+  },
+  "history__messageCount": {
+    "message": "$1 条消息",
+    "description": "消息数量（带占位符）"
+  },
+  "history__errorGetTab": {
+    "message": "无法获取当前标签页",
+    "description": "获取标签页错误"
+  },
+  "history__errorOpenWindow": {
+    "message": "无法打开聊天窗口，请确保在支持扩展的页面中使用",
+    "description": "打开窗口错误"
+  },
+  "history__successWindowOpened": {
+    "message": "聊天窗口已打开",
+    "description": "成功打开窗口"
+  },
+  "history__errorOpenFailed": {
+    "message": "打开聊天窗口失败：",
+    "description": "打开窗口失败"
+  },
+  "history__successDeleted": {
+    "message": "对话已删除",
+    "description": "删除成功"
+  },
+  "history__errorDeleted": {
+    "message": "删除失败",
+    "description": "删除失败"
+  },
+  "history__successCleared": {
+    "message": "历史记录已清空",
+    "description": "历史记录已清空"
+  },
+  "history__successExported": {
+    "message": "导出成功",
+    "description": "导出成功"
+  },
+  "history__errorExported": {
+    "message": "导出失败",
+    "description": "导出失败"
+  },
+  "history__errorChatNotFound": {
+    "message": "对话不存在",
+    "description": "对话不存在"
+  },
+  "chat__welcome": {
+    "message": "开始对话",
+    "description": "欢迎消息"
+  },
+  "chat__welcomeHint": {
+    "message": "输入问题，开始与 AI 对话",
+    "description": "欢迎提示"
+  },
+  "chat__placeholderInput": {
+    "message": "输入你的问题...",
+    "description": "输入占位符"
+  },
+  "chat__btnSend": {
+    "message": "发送",
+    "description": "发送按钮"
+  },
+  "chat__thinking": {
+    "message": "AI 正在思考...",
+    "description": "思考指示器"
+  },
+  "chat__windowTitle": {
+    "message": "$1",
+    "description": "窗口标题（带占位符）"
+  },
+  "chat__roleUser": {
+    "message": "用户",
+    "description": "用户角色"
+  },
+  "chat__roleAI": {
+    "message": "AI",
+    "description": "AI 角色"
+  },
+  "content__toolbarChat": {
+    "message": "在新的对话窗口中讨论",
+    "description": "工具栏提示"
+  },
+  "content__toolbarBtnChat": {
+    "message": "AI对话",
+    "description": "工具栏按钮文本"
+  },
+  "content__btnMinimize": {
+    "message": "最小化",
+    "description": "最小化按钮"
+  },
+  "content__btnClose": {
+    "message": "关闭",
+    "description": "关闭按钮"
+  },
+  "common__loading": {
+    "message": "加载中...",
+    "description": "加载文本"
+  },
+  "common__error": {
+    "message": "错误",
+    "description": "错误文本"
+  },
+  "common__success": {
+    "message": "成功",
+    "description": "成功文本"
+  },
+  "common__cancel": {
+    "message": "取消",
+    "description": "取消文本"
+  },
+  "common__confirm": {
+    "message": "确定",
+    "description": "确定文本"
+  },
+  "export__chatTime": {
+    "message": "**对话时间**",
+    "description": "导出中的对话时间标签"
+  },
+  "export__messageCount": {
+    "message": "**消息数**",
+    "description": "导出中的消息数标签"
+  },
+  "export__exportTime": {
+    "message": "**导出时间**",
+    "description": "导出中的导出时间标签"
+  },
+  "export__chatCount": {
+    "message": "**对话数**",
+    "description": "导出中的对话数标签"
+  },
+  "export__time": {
+    "message": "**时间**",
+    "description": "导出中的时间标签"
+  },
+  "export__roleUser": {
+    "message": "## 👤 用户",
+    "description": "导出中的用户角色"
+  },
+  "export__roleAI": {
+    "message": "## 🤖 AI",
+    "description": "导出中的AI角色"
+  },
+  "export__title": {
+    "message": "AI 对话记录汇总",
+    "description": "导出标题"
+  },
+  "time__justNow": {
+    "message": "刚刚",
+    "description": "相对时间 - 刚刚"
+  },
+  "time__minutesAgo": {
+    "message": "$1分钟前",
+    "description": "相对时间 - 分钟前"
+  },
+  "time__hoursAgo": {
+    "message": "$1小时前",
+    "description": "相对时间 - 小时前"
+  },
+  "time__daysAgo": {
+    "message": "$1天前",
+    "description": "相对时间 - 天前"
+  },
+  "popup__presetOpenAI": {
+    "message": "OpenAI",
+    "description": "OpenAI 预设按钮"
+  },
+  "popup__presetDeepSeek": {
+    "message": "DeepSeek",
+    "description": "DeepSeek 预设按钮"
+  },
+  "popup__presetQwen": {
+    "message": "Qwen",
+    "description": "Qwen 预设按钮"
+  },
+  "popup__defaultConfirmText": {
+    "message": "确定要执行此操作吗？",
+    "description": "默认确认对话框文本"
+  },
+  "popup__footerVersion": {
+    "message": "AI 多窗口扩展 v$1",
+    "description": "Footer 版本信息（带占位符）"
+  },
+  "error__apiConfigMissing": {
+    "message": "API 配置缺失，请在设置中配置 API 密钥和模型。",
+    "description": "API 配置缺失时的错误消息"
+  },
+  "error__emptyApiResponse": {
+    "message": "API 返回空响应，请重试。",
+    "description": "API 返回空响应时的错误消息"
+  }
+}

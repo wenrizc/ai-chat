@@ -1,13 +1,14 @@
-// AI Multi-Window Extension - Background Service Worker
-// 处理与 AI API 的通信
+import OpenAI from 'openai';
 
-// 监听来自 content script 和 chat window 的消息
+const CONFIG_KEYS = ['apiUrl', 'apiKey', 'modelName'];
+
+// Handle async message responses by returning true
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'CHAT_REQUEST') {
     handleChatRequest(request)
       .then(response => sendResponse({ success: true, data: response }))
       .catch(error => sendResponse({ success: false, error: error.message }));
-    return true; // 保持消息通道开启以支持异步响应
+    return true;
   }
 
   if (request.type === 'GET_CONFIG') {
@@ -18,12 +19,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// 获取配置
 async function getConfig() {
-  const result = await chrome.storage.local.get(['apiUrl', 'apiKey', 'modelName']);
+  const result = await chrome.storage.local.get(CONFIG_KEYS);
 
-  if (!result.apiUrl || !result.apiKey || !result.modelName) {
-    throw new Error('API 配置不完整，请在扩展设置中配置');
+  if (!result.apiKey || !result.modelName) {
+    throw new Error(chrome.i18n.getMessage('error__apiConfigMissing'));
   }
 
   return {
@@ -33,39 +33,37 @@ async function getConfig() {
   };
 }
 
-// 处理聊天请求（非流式）
 async function handleChatRequest(request) {
   const { messages } = request;
   const config = await getConfig();
 
-  const endpoint = `${config.apiUrl.replace(/\/$/, '')}/chat/completions`;
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`
-    },
-    body: JSON.stringify({
-      model: config.modelName,
-      messages: messages,
-      stream: false
-    })
+  const client = new OpenAI({
+    apiKey: config.apiKey,
+    baseURL: normalizeBaseUrl(config.apiUrl),
+    dangerouslyAllowBrowser: true
   });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`API 请求失败: ${response.status} ${errorText}`);
+  const data = await client.chat.completions.create({
+    model: config.modelName,
+    messages
+  });
+
+  const content = data?.choices?.[0]?.message?.content || '';
+  if (!content) {
+    throw new Error(chrome.i18n.getMessage('error__emptyApiResponse'));
   }
 
-  const data = await response.json();
-  return data.choices[0].message.content;
+  return content;
 }
 
-// 扩展安装时的处理
+// Remove trailing slash to ensure consistent URL formatting
+function normalizeBaseUrl(apiUrl) {
+  if (!apiUrl) return undefined;
+  return apiUrl.replace(/\/$/, '');
+}
+
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    // 首次安装，打开设置页面
     chrome.runtime.openOptionsPage();
   }
 });

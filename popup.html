@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,6 @@
       opacity: 0.95;
     }
 
-    /* 标签页导航 */
     .tabs {
       display: flex;
       border-bottom: 1px solid #e5e5e5;
@@ -69,7 +68,6 @@
       border-bottom-color: #667eea;
     }
 
-    /* 标签页内容 */
     .tab-content {
       display: none;
       padding: 20px;
@@ -202,32 +200,6 @@
       border: 1px solid #fad2cf;
     }
 
-    .info-box {
-      padding: 12px;
-      background: #f9fafb;
-      border-radius: 8px;
-      font-size: 12px;
-      color: #6b7280;
-      line-height: 1.6;
-      border: 1px solid #e5e5e5;
-    }
-
-    .info-box a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .info-box a:hover {
-      text-decoration: underline;
-    }
-
-    .divider {
-      height: 1px;
-      background: #e5e5e5;
-      margin: 20px 0;
-    }
-
     .preset-buttons {
       display: flex;
       gap: 8px;
@@ -265,46 +237,6 @@
       color: #9ca3af;
     }
 
-    /* 语言选择器样式 */
-    .language-selector {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .language-selector label {
-      font-size: 13px;
-      font-weight: 500;
-      color: #4a4a4a;
-      white-space: nowrap;
-    }
-
-    .language-select {
-      flex: 1;
-      padding: 8px 12px;
-      border: 1px solid #e5e5e5;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-      background: #fafafa;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .language-select:hover {
-      border-color: #667eea;
-      background: #ffffff;
-    }
-
-    .language-select:focus {
-      outline: none;
-      border-color: #667eea;
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    /* 历史记录样式 */
     .history-list {
       max-height: 350px;
       overflow-y: auto;
@@ -392,7 +324,6 @@
       flex: 1;
     }
 
-    /* 对话详情模态框 */
     .modal {
       display: none;
       position: fixed;
@@ -462,26 +393,6 @@
       flex: 1;
     }
 
-    .chat-message {
-      margin-bottom: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #fafafa;
-    }
-
-    .chat-message-role {
-      font-weight: 600;
-      color: #667eea;
-      margin-bottom: 6px;
-      font-size: 13px;
-    }
-
-    .chat-message-content {
-      color: #262626;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
     .modal-footer {
       padding: 16px 20px;
       border-top: 1px solid #e5e5e5;
@@ -490,7 +401,6 @@
       justify-content: flex-end;
     }
 
-    /* 导出格式选择对话框 */
     .export-options {
       display: flex;
       flex-direction: column;
@@ -541,116 +451,84 @@
 </head>
 <body>
   <div class="header">
-    <h1 data-i18n="popup.title">ai chat</h1>
+    <h1 data-i18n="popup__title">AI Assistant</h1>
   </div>
 
-  <!-- 标签页导航 -->
   <div class="tabs">
-    <button class="tab active" data-tab="config" data-i18n="popup.tabConfig">配置</button>
-    <button class="tab" data-tab="history" data-i18n="popup.tabHistory">历史记录</button>
+    <button class="tab active" data-tab="config" data-i18n="popup__tabConfig">Config</button>
+    <button class="tab" data-tab="history" data-i18n="popup__tabHistory">History</button>
   </div>
 
-  <!-- 配置标签页 -->
   <div class="tab-content active" id="configTab">
     <div class="section">
-      <!-- 语言选择器 -->
-      <div class="language-selector">
-        <label for="languageSelect" data-i18n="popup.language">语言</label>
-        <select id="languageSelect" class="language-select">
-          <option value="zh-CN">简体中文</option>
-          <option value="en-US">English</option>
-        </select>
-      </div>
-
-      <div class="section-title" data-i18n="popup.sectionApiConfig">API 配置</div>
+      <div class="section-title" data-i18n="popup__sectionApiConfig">API Configuration</div>
 
       <div id="status" class="status"></div>
 
       <div class="input-group">
-        <label for="apiUrl" data-i18n="popup.labelApiUrl">API 地址</label>
+        <label for="apiUrl" data-i18n="popup__labelApiUrl">API URL</label>
         <input
           type="url"
           id="apiUrl"
-          data-i18n-placeholder="popup.placeholderApiUrl"
-          placeholder="https://api.openai.com/v1"
         />
         <div class="preset-buttons">
-          <button class="preset-btn" data-url="https://api.openai.com/v1">OpenAI</button>
-          <button class="preset-btn" data-url="https://api.deepseek.com">DeepSeek</button>
-          <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1">Qwen</button>
+          <button class="preset-btn" data-url="https://api.openai.com/v1" data-i18n="popup__presetOpenAI">OpenAI</button>
+          <button class="preset-btn" data-url="https://api.deepseek.com" data-i18n="popup__presetDeepSeek">DeepSeek</button>
+          <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1" data-i18n="popup__presetQwen">Qwen</button>
         </div>
-        <div class="note" data-i18n="popup.noteApiCompatibility">支持所有 OpenAI 兼容的 API</div>
+        <div class="note" data-i18n="popup__noteApiCompatibility">Supports all OpenAI-compatible APIs</div>
       </div>
 
       <div class="input-group">
-        <label for="apiKey" data-i18n="popup.labelApiKey">API 密钥</label>
+        <label for="apiKey" data-i18n="popup__labelApiKey">API Key</label>
         <input
           type="password"
           id="apiKey"
-          data-i18n-placeholder="popup.placeholderApiKey"
-          placeholder=""
         />
       </div>
 
       <div class="input-group">
-        <label for="modelName" data-i18n="popup.labelModelName">模型名称</label>
+        <label for="modelName" data-i18n="popup__labelModelName">Model Name</label>
         <input
           type="text"
           id="modelName"
-          data-i18n-placeholder="popup.placeholderModelName"
-          placeholder=""
         />
       </div>
 
-      <button id="saveBtn" class="btn btn-primary" data-i18n="popup.btnSaveConfig">保存配置</button>
+      <button id="saveBtn" class="btn btn-primary" data-i18n="popup__btnSaveConfig">Save Config</button>
     </div>
   </div>
 
-  <!-- 历史记录标签页 -->
   <div class="tab-content" id="historyTab">
     <div id="historyStatus" class="status"></div>
 
     <div class="history-list" id="historyList">
       <div class="history-empty">
         <div class="history-empty-icon">💬</div>
-        <div data-i18n="history.empty">暂无历史对话</div>
+        <div data-i18n="history__empty">No chat history yet</div>
       </div>
     </div>
 
     <div class="bottom-actions">
-      <button id="exportAllBtn" class="btn btn-primary" data-i18n="history.btnExportAll">导出所有</button>
-      <button id="clearAllBtn" class="btn btn-danger" data-i18n="history.btnClearHistory">清空历史</button>
+      <button id="exportAllBtn" class="btn btn-primary" data-i18n="history__btnExportAll">Export All</button>
+      <button id="clearAllBtn" class="btn btn-danger" data-i18n="history__btnClearHistory">Clear History</button>
     </div>
   </div>
 
-  <div class="footer">
+  <div class="footer" id="footer">
     AI Multi-Window Extension v1.0.0
   </div>
 
-  <!-- 查看对话详情模态框 -->
-  <div class="modal" id="viewModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title" id="viewModalTitle" data-i18n="history.modalViewTitle">对话详情</div>
-        <button class="modal-close" data-modal="viewModal">&times;</button>
-      </div>
-      <div class="modal-body" id="viewModalBody">
-        <!-- 对话内容将在这里显示 -->
-      </div>
-    </div>
-  </div>
-
-  <!-- 导出格式选择模态框 -->
   <div class="modal" id="exportModal">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title" data-i18n="history.modalExportTitle">选择导出格式</div>
+        <div class="modal-title" data-i18n="history__modalExportTitle">Select Export Format</div>
         <button class="modal-close" data-modal="exportModal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="export-options">
           <div class="export-option" data-format="markdown">
-            <div class="export-option-title" data-i18n="history.exportFormatMarkdown">Markdown (.md)</div>
+            <div class="export-option-title" data-i18n="history__exportFormatMarkdown">Markdown (.md)</div>
           </div>
         </div>
       </div>
@@ -662,10 +540,10 @@
       <div class="modal-body">
         <div class="confirm-dialog">
           <div class="confirm-dialog-icon">⚠️</div>
-          <div class="confirm-dialog-text" id="confirmText">确定要执行此操作吗？</div>
+          <div class="confirm-dialog-text" id="confirmText" data-i18n="popup__defaultConfirmText">Are you sure you want to perform this action?</div>
           <div class="confirm-dialog-actions">
-            <button class="btn btn-secondary" id="confirmCancelBtn" data-i18n="history.btnCancel">取消</button>
-            <button class="btn btn-danger" id="confirmBtn" data-i18n="history.btnConfirm">确定</button>
+            <button class="btn btn-secondary" id="confirmCancelBtn" data-i18n="history__btnCancel">Cancel</button>
+            <button class="btn btn-danger" id="confirmBtn" data-i18n="history__btnConfirm">Confirm</button>
           </div>
         </div>
       </div>

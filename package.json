@@ -1,13 +1,40 @@
 {
   "name": "ai-multi-window-extension",
   "version": "1.0.0",
-  "description": "支持多窗口对话的AI助手，使用OpenAI兼容接口",
+  "description": "AI Multi-Window Extension",
+  "keywords": [
+    "ai",
+    "chat",
+    "chrome-extension",
+    "browser-extension",
+    "openai",
+    "gpt",
+    "assistant",
+    "multi-window",
+    "productivity",
+    "chatgpt",
+    "llm"
+  ],
+  "author": "wenrizc",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenrizc/ai-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wenrizc/ai-chat/issues"
+  },
+  "homepage": "https://github.com/wenrizc/ai-chat#readme",
   "scripts": {
+    "build": "node build.mjs",
+    "build:watch": "node build.mjs --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["ai", "chat", "extension"],
-  "author": "",
-  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  },
   "dependencies": {
+    "marked": "^17.0.1",
+    "openai": "^4.0.0"
   }
 }

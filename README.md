@@ -10,36 +10,55 @@
 
 </div>
 
+## Overview
+
+AI Multi-Window Chat lets you open multiple draggable chat windows on any page, send selected text to a new chat, and manage/export conversation history. It works with OpenAI-compatible APIs by configuring a base URL, API key, and model.
+
 ## Features
 
-- **Multi-Window Chat** - Open multiple independent chat windows simultaneously
-- **Floating Windows** - Draggable, minimizable, closable floating chat windows
-- **History Management** - Auto-save all conversations with view and export support
-- **Export to Markdown** - Export conversations as Markdown files
-- **OpenAI Compatible** - Works with all OpenAI-compatible APIs
+- **Multi-Window Chat** - Open multiple independent chat windows at once
+- **Floating Windows** - Drag, resize, minimize, close, and rename by clicking the title
+- **Selection Toolbar** - Highlight text to launch a new chat with the selection
+- **History Management** - Auto-save, reopen, delete, and export chats
+- **Markdown Export** - Export a single chat or all chats as Markdown
+- **OpenAI Compatible** - Works with any OpenAI-compatible API endpoint
 
-## Quick Start
+## Install (Developer Mode)
 
-### Installation
+1. Install dependencies:
+   - `npm install`
+2. Build the background service worker:
+   - `npm run build` 
+3. Open Chrome and go to `chrome://extensions/`
+4. Enable "Developer mode" (top right)
+5. Click "Load unpacked" and select the repo root folder (for example, `ai-chat`)
+6. The options page opens automatically on first install
 
-1. Open Chrome and navigate to `chrome://extensions/`
-2. Enable "Developer mode" (top right)
-3. Click "Load unpacked"
-4. Select the `ai-multi-window-extension` folder
-5. Installation complete!
+## Configure API
 
-### Configure API
-
-1. Click the extension icon in Chrome toolbar
-2. Configure in the popup page:
+1. Click the extension icon to open the settings popup
+2. Fill in:
    - **API URL**: e.g., `https://api.openai.com/v1`
-   - **API Key**: Your API key
-   - **Model Name**: e.g., `gpt-3.5-turbo`
-3. Click "Save"
+   - **API Key**: your API key
+   - **Model Name**: e.g., `gpt-5`
+3. Click "Save Config"
 
-### Supported APIs
+## Usage
 
-- Any OpenAI-compatible service
+- Select text on a page, then click **AI Chat** in the floating toolbar.
+- Press `Alt+N` to open a new chat window with the current selection.
+- Click the window title to rename it.
+- Open the **History** tab to reopen, export, or delete chats.
+
+## Build Notes
+
+- `build.mjs` bundles `background.js` to `dist/background.js` using esbuild.
+- `manifest.json` points the service worker to `dist/background.js`, so the build step is required.
+
+## Permissions
+
+- `storage` stores settings and chat history locally
+- `activeTab` and `host_permissions` (`<all_urls>`) enable the selection toolbar on pages
 
 ## License
 

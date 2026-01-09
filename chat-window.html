@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,38 +8,34 @@
 </head>
 <body>
   <div class="chat-container">
-    <!-- 消息列表 -->
     <div class="messages-container" id="messagesContainer">
       <div class="welcome-message">
         <div class="welcome-icon">💬</div>
-        <div class="welcome-text" data-i18n="chat.welcome">开始对话</div>
-        <div class="welcome-hint" data-i18n="chat.welcomeHint">输入问题，开始与 AI 对话</div>
+        <div class="welcome-text" data-i18n="chat__welcome">Start Chatting</div>
+        <div class="welcome-hint" data-i18n="chat__welcomeHint">Enter a question to start chatting with AI</div>
       </div>
     </div>
 
-    <!-- 输入区域 -->
     <div class="input-container">
       <textarea
         id="messageInput"
-        data-i18n-placeholder="chat.placeholderInput"
-        placeholder="输入你的问题..."
+        data-i18n-placeholder="chat__placeholderInput"
+        placeholder="Enter your question..."
         rows="1"
       ></textarea>
-      <button id="sendBtn" class="send-btn" data-i18n-title="chat.btnSend" title="发送">
+      <button id="sendBtn" class="send-btn" data-i18n-title="chat__btnSend" title="Send">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
         </svg>
       </button>
     </div>
 
-    <!-- 加载指示器 -->
     <div class="loading-indicator" id="loadingIndicator" style="display: none;">
-      <div class="loading-text" data-i18n="chat.thinking">AI 正在思考...</div>
+      <div class="loading-text" data-i18n="chat__thinking">AI is thinking...</div>
     </div>
   </div>
 
   <script src="i18n.js"></script>
-  <script src="marked.min.js"></script>
-  <script src="chat-window.js"></script>
+  <script src="dist/chat-window.js"></script>
 </body>
 </html>
