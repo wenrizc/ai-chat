@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 
-const CONFIG_KEYS = ['apiUrl', 'apiKey', 'modelName'];
+const STORAGE_KEYS = ['apiProfiles', 'activeApiProfileId', 'apiUrl', 'apiKey', 'modelName'];
 
 // Handle async message responses by returning true
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -20,16 +20,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 async function getConfig() {
-  const result = await chrome.storage.local.get(CONFIG_KEYS);
+  const result = await chrome.storage.local.get(STORAGE_KEYS);
+  const profiles = Array.isArray(result.apiProfiles) ? result.apiProfiles : [];
+  let profile = null;
 
-  if (!result.apiKey || !result.modelName) {
+  if (profiles.length > 0) {
+    profile = profiles.find(item => item.id === result.activeApiProfileId) || profiles[0];
+  }
+
+  if (!profile) {
+    profile = {
+      apiUrl: result.apiUrl,
+      apiKey: result.apiKey,
+      modelName: result.modelName
+    };
+  }
+
+  const apiUrl = profile.apiUrl || result.apiUrl;
+  const apiKey = profile.apiKey || result.apiKey;
+  const modelName = profile.modelName || result.modelName;
+
+  if (!apiKey || !modelName) {
     throw new Error(chrome.i18n.getMessage('error__apiConfigMissing'));
   }
 
   return {
-    apiUrl: result.apiUrl,
-    apiKey: result.apiKey,
-    modelName: result.modelName
+    apiUrl,
+    apiKey,
+    modelName
   };
 }
 
@@ -62,8 +80,3 @@ function normalizeBaseUrl(apiUrl) {
   return apiUrl.replace(/\/$/, '');
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === 'install') {
-    chrome.runtime.openOptionsPage();
-  }
-});

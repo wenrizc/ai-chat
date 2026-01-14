@@ -11,164 +11,292 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --accent: #667eea;
+      --border: #e5e5e5;
+      --text: #1a1a1a;
+      --muted: #737373;
+      --bg: #ffffff;
+      --panel-list-height: 400px;
+    }
+
+    html,
     body {
-      width: 500px;
-      min-height: 450px;
+      height: auto;
+    }
+
+    body {
+      width: 540px;
+      min-height: 0;
+      height: auto;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       font-size: 14px;
       line-height: 1.6;
-      color: #1a1a1a;
-      background: #ffffff;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
     }
 
     .header {
-      padding: 24px 20px 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #ffffff;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
     }
 
     .header h1 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .header p {
-      font-size: 13px;
-      opacity: 0.95;
     }
 
     .tabs {
       display: flex;
-      border-bottom: 1px solid #e5e5e5;
-      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
     }
 
     .tab {
       flex: 1;
-      padding: 14px 20px;
+      padding: 12px 16px;
       text-align: center;
       background: transparent;
       border: none;
       border-bottom: 2px solid transparent;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: #737373;
-      transition: all 0.2s;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
     }
 
     .tab:hover {
-      color: #667eea;
-      background: rgba(102, 126, 234, 0.05);
+      color: var(--accent);
     }
 
     .tab.active {
-      color: #667eea;
-      border-bottom-color: #667eea;
+      color: var(--accent);
+      border-bottom-color: var(--accent);
     }
 
     .tab-content {
       display: none;
-      padding: 20px;
+      padding: 16px;
+      flex: 1 1 auto;
+      min-height: 0;
     }
 
     .tab-content.active {
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
 
-    .section {
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 600;
+    .config-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 12px;
-      color: #2c2c2c;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      flex-wrap: nowrap;
+    }
+
+    .config-toolbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: nowrap;
+    }
+
+    .config-toolbar-right label {
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      line-height: 1.2;
+      padding: 6px 0;
+    }
+
+    .config-toolbar-right select {
+      padding: 6px 10px;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      align-items: start;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .profile-list {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      background: #fafafa;
+      height: var(--panel-list-height);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .profile-list.empty {
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    .profile-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .profile-list::-webkit-scrollbar-track {
+      background: #f5f5f5;
+    }
+
+    .profile-list::-webkit-scrollbar-thumb {
+      background: #d4d4d4;
+      border-radius: 3px;
+    }
+
+    .profile-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .profile-item:hover {
+      background: #f3f4f6;
+    }
+
+    .profile-item.active {
+      background: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.12);
+    }
+
+    .profile-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1px solid #cbd5f5;
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .profile-item.current .profile-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .profile-name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-details {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #ffffff;
+      min-height: var(--panel-list-height);
     }
 
     .input-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .input-group label {
       display: block;
       margin-bottom: 6px;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 12px;
+      font-weight: 600;
       color: #4a4a4a;
     }
 
     input[type="password"],
     input[type="text"],
-    input[type="url"] {
+    input[type="url"],
+    select {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #e5e5e5;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-family: inherit;
-      transition: all 0.2s;
-      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #ffffff;
     }
 
     input[type="password"]:focus,
     input[type="text"]:focus,
-    input[type="url"]:focus {
+    input[type="url"]:focus,
+    select:focus {
       outline: none;
-      border-color: #667eea;
-      background: #ffffff;
+      border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
+    .inline-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .inline-actions input {
+      flex: 1;
+    }
+
     .btn {
-      padding: 10px 20px;
+      padding: 8px 12px;
       border: none;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--accent);
       color: #ffffff;
-      width: 100%;
     }
 
     .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
+      background: #5a6fe0;
     }
 
     .btn-secondary {
       background: #ffffff;
-      color: #667eea;
-      border: 1px solid #e5e5e5;
-      padding: 6px 12px;
-      font-size: 13px;
+      color: var(--text);
+      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
-      background: #f8f9fa;
-      border-color: #667eea;
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     .btn-danger {
       background: #ffffff;
       color: #dc2626;
       border: 1px solid #fecaca;
-      padding: 6px 12px;
-      font-size: 13px;
     }
 
     .btn-danger:hover {
@@ -176,11 +304,36 @@
       border-color: #dc2626;
     }
 
+    .btn:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      border-color: #e5e7eb;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    input:disabled,
+    select:disabled {
+      background: #f9fafb;
+      color: #a3a3a3;
+      cursor: not-allowed;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn-inline {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
     .status {
-      padding: 12px;
+      padding: 10px 12px;
       border-radius: 8px;
-      font-size: 13px;
-      margin-bottom: 16px;
+      font-size: 12px;
+      margin-bottom: 12px;
       display: none;
     }
 
@@ -202,19 +355,19 @@
 
     .preset-buttons {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
 
     .preset-btn {
-      padding: 6px 12px;
-      font-size: 12px;
+      padding: 4px 8px;
+      font-size: 11px;
       background: #f3f4f6;
-      border: 1px solid #e5e5e5;
+      border: 1px solid var(--border);
       border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .preset-btn:hover {
@@ -222,23 +375,20 @@
       border-color: #d1d5db;
     }
 
-    .note {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 4px;
-    }
-
     .footer {
-      padding: 16px 20px;
-      background: #f9fafb;
-      border-top: 1px solid #e5e5e5;
+      padding: 12px 20px;
+      border-top: 1px solid var(--border);
       text-align: center;
       font-size: 12px;
       color: #9ca3af;
     }
 
     .history-list {
-      max-height: 350px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      background: #fafafa;
+      height: var(--panel-list-height);
       overflow-y: auto;
       margin-bottom: 16px;
     }
@@ -258,16 +408,17 @@
 
     .history-item {
       padding: 12px;
-      border: 1px solid #e5e5e5;
+      border: none;
       border-radius: 8px;
       margin-bottom: 12px;
       background: #ffffff;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
       transition: all 0.2s;
     }
 
     .history-item:hover {
-      border-color: #667eea;
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
     }
 
     .history-item-header {
@@ -316,12 +467,12 @@
     .bottom-actions {
       display: flex;
       gap: 8px;
-      padding-top: 16px;
-      border-top: 1px solid #e5e5e5;
+      padding-top: 10px;
+      justify-content: flex-end;
     }
 
     .bottom-actions .btn {
-      flex: 1;
+      flex: 0 0 auto;
     }
 
     .modal {
@@ -354,7 +505,7 @@
 
     .modal-header {
       padding: 16px 20px;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -395,7 +546,7 @@
 
     .modal-footer {
       padding: 16px 20px;
-      border-top: 1px solid #e5e5e5;
+      border-top: 1px solid var(--border);
       display: flex;
       gap: 8px;
       justify-content: flex-end;
@@ -409,7 +560,7 @@
 
     .export-option {
       padding: 12px;
-      border: 2px solid #e5e5e5;
+      border: 2px solid var(--border);
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
@@ -417,8 +568,16 @@
     }
 
     .export-option:hover {
-      border-color: #667eea;
+      border-color: var(--accent);
       background: rgba(102, 126, 234, 0.05);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      justify-content: flex-end;
     }
 
     .export-option-title {
@@ -460,42 +619,69 @@
   </div>
 
   <div class="tab-content active" id="configTab">
-    <div class="section">
-      <div class="section-title" data-i18n="popup__sectionApiConfig">API Configuration</div>
+    <div class="config-toolbar">
+      <button id="addProfileBtn" class="btn btn-primary btn-small" data-i18n="popup__btnAddProfile">New</button>
+      <div class="config-toolbar-right">
+        <label for="activeProfileSelect" data-i18n="popup__labelActiveProfile">Current</label>
+        <select id="activeProfileSelect"></select>
+      </div>
+    </div>
 
-      <div id="status" class="status"></div>
+    <div id="status" class="status"></div>
 
-      <div class="input-group">
-        <label for="apiUrl" data-i18n="popup__labelApiUrl">API URL</label>
-        <input
-          type="url"
-          id="apiUrl"
-        />
-        <div class="preset-buttons">
-          <button class="preset-btn" data-url="https://api.openai.com/v1" data-i18n="popup__presetOpenAI">OpenAI</button>
-          <button class="preset-btn" data-url="https://api.deepseek.com" data-i18n="popup__presetDeepSeek">DeepSeek</button>
-          <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1" data-i18n="popup__presetQwen">Qwen</button>
+    <div class="config-grid">
+      <div class="profile-list" id="profileList"></div>
+      <div class="profile-details">
+        <div class="input-group">
+          <label for="profileName" data-i18n="popup__labelProfileName">Name</label>
+          <input
+            type="text"
+            id="profileName"
+            data-i18n-placeholder="popup__placeholderProfileName"
+          />
         </div>
-        <div class="note" data-i18n="popup__noteApiCompatibility">Supports all OpenAI-compatible APIs</div>
-      </div>
 
-      <div class="input-group">
-        <label for="apiKey" data-i18n="popup__labelApiKey">API Key</label>
-        <input
-          type="password"
-          id="apiKey"
-        />
-      </div>
+        <div class="input-group">
+          <label for="apiUrl" data-i18n="popup__labelApiUrl">API URL</label>
+          <input
+            type="url"
+            id="apiUrl"
+            data-i18n-placeholder="popup__placeholderApiUrl"
+          />
+          <div class="preset-buttons">
+            <button class="preset-btn" data-url="https://api.openai.com/v1" data-i18n="popup__presetOpenAI">OpenAI</button>
+            <button class="preset-btn" data-url="https://api.deepseek.com" data-i18n="popup__presetDeepSeek">DeepSeek</button>
+            <button class="preset-btn" data-url="https://dashscope.aliyuncs.com/compatible-mode/v1" data-i18n="popup__presetQwen">Qwen</button>
+          </div>
+        </div>
 
-      <div class="input-group">
-        <label for="modelName" data-i18n="popup__labelModelName">Model Name</label>
-        <input
-          type="text"
-          id="modelName"
-        />
-      </div>
+        <div class="input-group">
+          <label for="apiKey" data-i18n="popup__labelApiKey">API Key</label>
+          <div class="inline-actions">
+            <input
+              type="password"
+              id="apiKey"
+            />
+            <button id="toggleApiKeyBtn" class="btn btn-secondary btn-inline" data-i18n="popup__btnShowKey">Show</button>
+            <button id="copyApiKeyBtn" class="btn btn-secondary btn-inline" data-i18n="popup__btnCopyKey">Copy</button>
+          </div>
+        </div>
 
-      <button id="saveBtn" class="btn btn-primary" data-i18n="popup__btnSaveConfig">Save Config</button>
+        <div class="input-group">
+          <label for="modelName" data-i18n="popup__labelModelName">Model Name</label>
+          <input
+            type="text"
+            id="modelName"
+          />
+        </div>
+
+        <div class="action-row">
+          <button id="testBtn" class="btn btn-secondary" data-i18n="popup__btnTestConnection">Test</button>
+          <button id="setActiveBtn" class="btn btn-secondary" data-i18n="popup__btnSetActive">Set Current</button>
+          <button id="saveBtn" class="btn btn-primary" data-i18n="popup__btnSaveProfile">Save</button>
+          <button id="deleteBtn" class="btn btn-danger" data-i18n="popup__btnDeleteProfile">Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 

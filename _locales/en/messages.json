@@ -39,6 +39,18 @@
     "message": "Model Name",
     "description": "Model Name label"
   },
+  "popup__labelProfileName": {
+    "message": "Name",
+    "description": "Profile name label"
+  },
+  "popup__placeholderProfileName": {
+    "message": "Profile name",
+    "description": "Profile name placeholder"
+  },
+  "popup__labelActiveProfile": {
+    "message": "Current",
+    "description": "Active profile label"
+  },
   "popup__placeholderApiUrl": {
     "message": "https://api.openai.com/v1",
     "description": "API URL placeholder"
@@ -55,6 +67,38 @@
     "message": "Save Config",
     "description": "Save configuration button"
   },
+  "popup__btnAddProfile": {
+    "message": "New",
+    "description": "Add profile button"
+  },
+  "popup__btnSaveProfile": {
+    "message": "Save",
+    "description": "Save profile button"
+  },
+  "popup__btnDeleteProfile": {
+    "message": "Delete",
+    "description": "Delete profile button"
+  },
+  "popup__btnSetActive": {
+    "message": "Set Current",
+    "description": "Set active profile button"
+  },
+  "popup__btnTestConnection": {
+    "message": "Test",
+    "description": "Test connection button"
+  },
+  "popup__btnShowKey": {
+    "message": "Show",
+    "description": "Show API key button"
+  },
+  "popup__btnHideKey": {
+    "message": "Hide",
+    "description": "Hide API key button"
+  },
+  "popup__btnCopyKey": {
+    "message": "Copy",
+    "description": "Copy API key button"
+  },
   "popup__noteApiCompatibility": {
     "message": "Supports all OpenAI-compatible APIs",
     "description": "API compatibility note"
@@ -66,6 +110,42 @@
   "popup__statusError": {
     "message": "Save failed, please check your input",
     "description": "Save error message"
+  },
+  "popup__statusDeleted": {
+    "message": "Profile deleted",
+    "description": "Delete success message"
+  },
+  "popup__statusCopied": {
+    "message": "API key copied",
+    "description": "Copy success message"
+  },
+  "popup__statusTestSuccess": {
+    "message": "Connection OK",
+    "description": "Connection success message"
+  },
+  "popup__statusTestFailed": {
+    "message": "Connection failed: $1",
+    "description": "Connection failed message with placeholder"
+  },
+  "popup__statusTestTimeout": {
+    "message": "Timeout",
+    "description": "Connection timeout label"
+  },
+  "popup__statusSetActive": {
+    "message": "Current profile updated",
+    "description": "Active profile updated message"
+  },
+  "popup__confirmDeleteProfile": {
+    "message": "Delete profile \"$1\"?",
+    "description": "Confirm delete profile message with placeholder"
+  },
+  "popup__profileNameEmpty": {
+    "message": "Untitled",
+    "description": "Fallback name for unnamed profile"
+  },
+  "popup__defaultProfileName": {
+    "message": "Profile $1",
+    "description": "Default profile name with index"
   },
   "popup__language": {
     "message": "Language",
@@ -316,7 +396,7 @@
     "description": "Footer version text with placeholder"
   },
   "error__apiConfigMissing": {
-    "message": "API config missing. Please set API Key and Model in settings.",
+    "message": "API config missing. Please add a profile and set it as current.",
     "description": "Error message when API config is missing"
   },
   "error__emptyApiResponse": {

@@ -32,7 +32,6 @@ AI Multi-Window Chat lets you open multiple draggable chat windows on any page, 
 3. Open Chrome and go to `chrome://extensions/`
 4. Enable "Developer mode" (top right)
 5. Click "Load unpacked" and select the repo root folder (for example, `ai-chat`)
-6. The options page opens automatically on first install
 
 ## Configure API
 

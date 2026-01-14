@@ -1,7 +1,25 @@
+const STORAGE_KEYS = {
+  profiles: 'apiProfiles',
+  activeProfileId: 'activeApiProfileId',
+  legacy: ['apiUrl', 'apiKey', 'modelName']
+};
+
+const DEFAULT_API_URL = 'https://api.openai.com/v1';
+const REQUEST_TIMEOUT_MS = 8000;
+
 const elements = {
   apiUrl: document.getElementById('apiUrl'),
   apiKey: document.getElementById('apiKey'),
   modelName: document.getElementById('modelName'),
+  profileName: document.getElementById('profileName'),
+  profileList: document.getElementById('profileList'),
+  addProfileBtn: document.getElementById('addProfileBtn'),
+  activeProfileSelect: document.getElementById('activeProfileSelect'),
+  toggleApiKeyBtn: document.getElementById('toggleApiKeyBtn'),
+  copyApiKeyBtn: document.getElementById('copyApiKeyBtn'),
+  setActiveBtn: document.getElementById('setActiveBtn'),
+  testBtn: document.getElementById('testBtn'),
+  deleteBtn: document.getElementById('deleteBtn'),
   saveBtn: document.getElementById('saveBtn'),
   status: document.getElementById('status'),
   presetBtns: document.querySelectorAll('.preset-btn'),
@@ -18,6 +36,10 @@ const elements = {
 };
 
 let currentChatId = null;
+let profiles = [];
+let selectedProfileId = null;
+let activeProfileId = null;
+let isApiKeyVisible = false;
 
 async function init() {
   document.documentElement.lang = chrome.i18n.getUILanguage() || 'en';
@@ -27,11 +49,10 @@ async function init() {
   if (footer) {
     footer.textContent = t('popup__footerVersion', manifest.version);
   }
-
   setupTabs();
   setupConfigHandlers();
   setupHistoryHandlers();
-  loadConfig();
+  await loadProfiles();
   loadHistory();
   updatePageTranslations();
 }
@@ -59,7 +80,39 @@ function setupTabs() {
 }
 
 function setupConfigHandlers() {
-  elements.saveBtn.addEventListener('click', saveConfig);
+  elements.saveBtn.addEventListener('click', saveProfile);
+  elements.addProfileBtn.addEventListener('click', addProfile);
+  elements.deleteBtn.addEventListener('click', () => {
+    const profile = getProfileById(selectedProfileId);
+    if (!profile) return;
+    const name = profile.name || t('popup__profileNameEmpty');
+    showConfirmDialog(t('popup__confirmDeleteProfile', name), async () => {
+      await deleteProfile();
+    });
+  });
+  elements.setActiveBtn.addEventListener('click', () => {
+    if (!selectedProfileId) return;
+    setActiveProfile(selectedProfileId);
+  });
+  elements.testBtn.addEventListener('click', testConnection);
+  elements.toggleApiKeyBtn.addEventListener('click', () => {
+    setApiKeyVisibility(!isApiKeyVisible);
+  });
+  elements.copyApiKeyBtn.addEventListener('click', copyApiKey);
+  elements.activeProfileSelect.addEventListener('change', () => {
+    const profileId = elements.activeProfileSelect.value;
+    if (!profileId) return;
+    selectProfile(profileId);
+    setActiveProfile(profileId);
+  });
+
+  if (elements.profileList) {
+    elements.profileList.addEventListener('click', (event) => {
+      const item = event.target.closest('.profile-item');
+      if (!item) return;
+      selectProfile(item.dataset.id);
+    });
+  }
 
   elements.presetBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -112,47 +165,386 @@ function setupHistoryHandlers() {
   });
 }
 
-async function loadConfig() {
+async function loadProfiles() {
   try {
-    const result = await chrome.storage.local.get(['apiUrl', 'apiKey', 'modelName']);
+    const result = await chrome.storage.local.get([
+      STORAGE_KEYS.profiles,
+      STORAGE_KEYS.activeProfileId,
+      ...STORAGE_KEYS.legacy
+    ]);
 
-    elements.apiUrl.value = result.apiUrl || 'https://api.openai.com/v1';
-    elements.apiKey.value = result.apiKey || '';
-    elements.modelName.value = result.modelName || '';
+    profiles = Array.isArray(result.apiProfiles) ? result.apiProfiles : [];
+    activeProfileId = result.activeApiProfileId || null;
+
+    if (profiles.length === 0) {
+      const hasLegacy = result.apiUrl || result.apiKey || result.modelName;
+      if (hasLegacy) {
+        const profile = {
+          id: generateId(),
+          name: getDefaultProfileName(1),
+          apiUrl: result.apiUrl || DEFAULT_API_URL,
+          apiKey: result.apiKey || '',
+          modelName: result.modelName || ''
+        };
+        profiles = [profile];
+        activeProfileId = profile.id;
+        selectedProfileId = profile.id;
+        await persistProfiles();
+        renderProfiles();
+        updateForm(profile);
+        setEmptyState(false);
+      } else {
+        activeProfileId = null;
+        selectedProfileId = null;
+        renderProfiles();
+        clearForm();
+        setEmptyState(true);
+      }
+      return;
+    } else {
+      const activeExists = profiles.some(profile => profile.id === activeProfileId);
+      if (!activeProfileId || !activeExists) {
+        activeProfileId = profiles[0].id;
+        await persistProfiles();
+      }
+    }
+
+    selectedProfileId = activeProfileId || (profiles[0] && profiles[0].id);
+    renderProfiles();
+
+    const selectedProfile = getProfileById(selectedProfileId);
+    if (selectedProfile) {
+      updateForm(selectedProfile);
+    }
+    setEmptyState(!selectedProfile);
   } catch (error) {
-    console.error('Failed to load config:', error);
+    console.error('Failed to load profiles:', error);
   }
 }
 
-async function saveConfig() {
-  const config = {
+async function persistProfiles() {
+  await chrome.storage.local.set({
+    apiProfiles: profiles,
+    activeApiProfileId: activeProfileId
+  });
+  await syncLegacyConfig();
+}
+
+async function syncLegacyConfig() {
+  const activeProfile = getProfileById(activeProfileId);
+  if (!activeProfile) {
+    await chrome.storage.local.remove(STORAGE_KEYS.legacy);
+    return;
+  }
+  await chrome.storage.local.set({
+    apiUrl: activeProfile.apiUrl,
+    apiKey: activeProfile.apiKey,
+    modelName: activeProfile.modelName
+  });
+}
+
+function renderProfiles() {
+  if (!elements.profileList) return;
+
+  if (profiles.length === 0) {
+    elements.profileList.classList.add('empty');
+    elements.profileList.innerHTML = '';
+  } else {
+    elements.profileList.classList.remove('empty');
+    elements.profileList.innerHTML = profiles.map(profile => {
+      const isActive = profile.id === activeProfileId;
+      const isSelected = profile.id === selectedProfileId;
+      const name = profile.name || t('popup__profileNameEmpty');
+      return `
+        <button class="profile-item${isSelected ? ' active' : ''}${isActive ? ' current' : ''}" data-id="${profile.id}">
+          <span class="profile-dot"></span>
+          <span class="profile-name">${escapeHtml(name)}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  if (elements.activeProfileSelect) {
+    if (profiles.length === 0) {
+      elements.activeProfileSelect.innerHTML = '';
+      elements.activeProfileSelect.value = '';
+      elements.activeProfileSelect.disabled = true;
+    } else {
+      const options = profiles.map(profile => {
+        const name = profile.name || t('popup__profileNameEmpty');
+        return `<option value="${profile.id}">${escapeHtml(name)}</option>`;
+      }).join('');
+      elements.activeProfileSelect.innerHTML = options;
+      elements.activeProfileSelect.value = activeProfileId || profiles[0].id;
+      elements.activeProfileSelect.disabled = false;
+    }
+  }
+}
+
+function selectProfile(profileId) {
+  const profile = getProfileById(profileId);
+  if (!profile) return;
+  selectedProfileId = profileId;
+  renderProfiles();
+  updateForm(profile);
+  setEmptyState(false);
+}
+
+function updateForm(profile) {
+  elements.profileName.value = profile.name || '';
+  elements.apiUrl.value = profile.apiUrl || '';
+  elements.apiKey.value = profile.apiKey || '';
+  elements.modelName.value = profile.modelName || '';
+  setApiKeyVisibility(false);
+}
+
+function clearForm() {
+  elements.profileName.value = '';
+  elements.apiUrl.value = '';
+  elements.apiKey.value = '';
+  elements.modelName.value = '';
+  setApiKeyVisibility(false);
+}
+
+function setEmptyState(isEmpty) {
+  elements.profileName.disabled = isEmpty;
+  elements.apiUrl.disabled = isEmpty;
+  elements.apiKey.disabled = isEmpty;
+  elements.modelName.disabled = isEmpty;
+  elements.toggleApiKeyBtn.disabled = isEmpty;
+  elements.copyApiKeyBtn.disabled = isEmpty;
+  elements.setActiveBtn.disabled = isEmpty;
+  elements.testBtn.disabled = isEmpty;
+  elements.saveBtn.disabled = isEmpty;
+  elements.deleteBtn.disabled = isEmpty;
+}
+
+function collectFormData() {
+  return {
+    id: selectedProfileId,
+    name: elements.profileName.value.trim(),
     apiUrl: elements.apiUrl.value.trim(),
     apiKey: elements.apiKey.value.trim(),
     modelName: elements.modelName.value.trim()
   };
+}
 
-  if (!config.apiUrl) {
-    showStatus(t('popup__labelApiUrl') + ' ' + t('common__error'), 'error');
-    return;
+function validateProfile(profile) {
+  if (!profile.name) {
+    showStatus(`${t('popup__labelProfileName')} ${t('common__error')}`, 'error');
+    return false;
   }
 
-  if (!config.apiKey) {
-    showStatus(t('popup__labelApiKey') + ' ' + t('common__error'), 'error');
-    return;
+  if (!profile.apiUrl) {
+    showStatus(`${t('popup__labelApiUrl')} ${t('common__error')}`, 'error');
+    return false;
   }
 
-  if (!config.modelName) {
-    showStatus(t('popup__labelModelName') + ' ' + t('common__error'), 'error');
+  if (!profile.apiKey) {
+    showStatus(`${t('popup__labelApiKey')} ${t('common__error')}`, 'error');
+    return false;
+  }
+
+  if (!profile.modelName) {
+    showStatus(`${t('popup__labelModelName')} ${t('common__error')}`, 'error');
+    return false;
+  }
+
+  return true;
+}
+
+async function saveProfile() {
+  const profile = collectFormData();
+  if (!validateProfile(profile)) return;
+
+  const index = profiles.findIndex(item => item.id === profile.id);
+  if (index === -1) {
+    profile.id = profile.id || generateId();
+    profiles.push(profile);
+    selectedProfileId = profile.id;
+  } else {
+    profiles[index] = {
+      ...profiles[index],
+      ...profile
+    };
+  }
+
+  try {
+    await persistProfiles();
+    renderProfiles();
+    showStatus(t('popup__statusSaved'), 'success');
+  } catch (error) {
+    console.error('Failed to save profile:', error);
+    showStatus(t('popup__statusError'), 'error');
+  }
+}
+
+async function addProfile() {
+  const newProfile = {
+    id: generateId(),
+    name: getDefaultProfileName(profiles.length + 1),
+    apiUrl: DEFAULT_API_URL,
+    apiKey: '',
+    modelName: ''
+  };
+  profiles = [newProfile, ...profiles];
+  selectedProfileId = newProfile.id;
+  renderProfiles();
+  updateForm(newProfile);
+  setEmptyState(false);
+  elements.profileName.focus();
+  try {
+    await persistProfiles();
+  } catch (error) {
+    console.error('Failed to add profile:', error);
+  }
+}
+
+async function deleteProfile() {
+  if (!selectedProfileId) return;
+  profiles = profiles.filter(profile => profile.id !== selectedProfileId);
+
+  if (profiles.length === 0) {
+    activeProfileId = null;
+    selectedProfileId = null;
+  } else {
+    if (selectedProfileId === activeProfileId) {
+      activeProfileId = profiles[0].id;
+    }
+    selectedProfileId = activeProfileId || profiles[0].id;
+  }
+
+  const selectedProfile = getProfileById(selectedProfileId);
+  try {
+    await persistProfiles();
+    renderProfiles();
+    if (selectedProfile) {
+      updateForm(selectedProfile);
+      setEmptyState(false);
+    } else {
+      clearForm();
+      setEmptyState(true);
+    }
+    showStatus(t('popup__statusDeleted'), 'success');
+  } catch (error) {
+    console.error('Failed to delete profile:', error);
+    showStatus(t('popup__statusError'), 'error');
+  }
+}
+
+async function setActiveProfile(profileId, options = {}) {
+  const { showMessage = true } = options;
+  if (!profileId) return;
+  activeProfileId = profileId;
+  try {
+    await persistProfiles();
+    renderProfiles();
+    if (elements.activeProfileSelect) {
+      elements.activeProfileSelect.value = activeProfileId;
+    }
+    if (showMessage) {
+      showStatus(t('popup__statusSetActive'), 'success');
+    }
+  } catch (error) {
+    console.error('Failed to set active profile:', error);
+    showStatus(t('popup__statusError'), 'error');
+  }
+}
+
+function setApiKeyVisibility(visible) {
+  isApiKeyVisible = visible;
+  elements.apiKey.type = visible ? 'text' : 'password';
+  elements.toggleApiKeyBtn.textContent = visible ? t('popup__btnHideKey') : t('popup__btnShowKey');
+}
+
+async function copyApiKey() {
+  const key = elements.apiKey.value.trim();
+  if (!key) {
+    showStatus(`${t('popup__labelApiKey')} ${t('common__error')}`, 'error');
     return;
   }
 
   try {
-    await chrome.storage.local.set(config);
-    showStatus(t('popup__statusSaved'), 'success');
+    await navigator.clipboard.writeText(key);
+    showStatus(t('popup__statusCopied'), 'success');
   } catch (error) {
-    console.error('Failed to save config:', error);
-    showStatus(t('popup__statusError'), 'error');
+    const textarea = document.createElement('textarea');
+    textarea.value = key;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'absolute';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const success = document.execCommand('copy');
+    textarea.remove();
+    if (success) {
+      showStatus(t('popup__statusCopied'), 'success');
+    } else {
+      showStatus(t('popup__statusError'), 'error');
+    }
   }
+}
+
+async function testConnection() {
+  const apiUrl = elements.apiUrl.value.trim();
+  const apiKey = elements.apiKey.value.trim();
+
+  if (!apiUrl) {
+    showStatus(`${t('popup__labelApiUrl')} ${t('common__error')}`, 'error');
+    return;
+  }
+
+  if (!apiKey) {
+    showStatus(`${t('popup__labelApiKey')} ${t('common__error')}`, 'error');
+    return;
+  }
+
+  const baseUrl = normalizeBaseUrl(apiUrl);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(`${baseUrl}/models`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      },
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      const statusText = `${response.status} ${response.statusText}`.trim();
+      showStatus(t('popup__statusTestFailed', statusText || response.status), 'error');
+      return;
+    }
+
+    showStatus(t('popup__statusTestSuccess'), 'success');
+  } catch (error) {
+    const reason = error.name === 'AbortError' ? t('popup__statusTestTimeout') : error.message;
+    showStatus(t('popup__statusTestFailed', reason), 'error');
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function normalizeBaseUrl(apiUrl) {
+  if (!apiUrl) return '';
+  return apiUrl.replace(/\/$/, '');
+}
+
+function generateId() {
+  if (crypto?.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return `profile-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function getDefaultProfileName(index) {
+  return t('popup__defaultProfileName', index);
+}
+
+function getProfileById(profileId) {
+  return profiles.find(profile => profile.id === profileId);
 }
 
 function showStatus(message, type = 'success') {

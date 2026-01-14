@@ -39,6 +39,18 @@
     "message": "模型名称",
     "description": "模型名称标签"
   },
+  "popup__labelProfileName": {
+    "message": "名称",
+    "description": "配置名称标签"
+  },
+  "popup__placeholderProfileName": {
+    "message": "配置名称",
+    "description": "配置名称占位符"
+  },
+  "popup__labelActiveProfile": {
+    "message": "当前使用",
+    "description": "当前配置标签"
+  },
   "popup__placeholderApiUrl": {
     "message": "https://api.openai.com/v1",
     "description": "API 地址占位符"
@@ -55,6 +67,38 @@
     "message": "保存配置",
     "description": "保存配置按钮"
   },
+  "popup__btnAddProfile": {
+    "message": "新增",
+    "description": "新增配置按钮"
+  },
+  "popup__btnSaveProfile": {
+    "message": "保存",
+    "description": "保存配置按钮"
+  },
+  "popup__btnDeleteProfile": {
+    "message": "删除",
+    "description": "删除配置按钮"
+  },
+  "popup__btnSetActive": {
+    "message": "设为当前",
+    "description": "设为当前配置按钮"
+  },
+  "popup__btnTestConnection": {
+    "message": "测试连接",
+    "description": "测试连接按钮"
+  },
+  "popup__btnShowKey": {
+    "message": "显示",
+    "description": "显示密钥按钮"
+  },
+  "popup__btnHideKey": {
+    "message": "隐藏",
+    "description": "隐藏密钥按钮"
+  },
+  "popup__btnCopyKey": {
+    "message": "复制",
+    "description": "复制密钥按钮"
+  },
   "popup__noteApiCompatibility": {
     "message": "支持所有 OpenAI 兼容的 API",
     "description": "API 兼容性说明"
@@ -66,6 +110,42 @@
   "popup__statusError": {
     "message": "保存失败，请检查输入",
     "description": "保存失败消息"
+  },
+  "popup__statusDeleted": {
+    "message": "记录已删除",
+    "description": "删除成功消息"
+  },
+  "popup__statusCopied": {
+    "message": "密钥已复制",
+    "description": "复制成功消息"
+  },
+  "popup__statusTestSuccess": {
+    "message": "连接成功",
+    "description": "连接成功消息"
+  },
+  "popup__statusTestFailed": {
+    "message": "连接失败：$1",
+    "description": "连接失败消息（带占位符）"
+  },
+  "popup__statusTestTimeout": {
+    "message": "超时",
+    "description": "连接超时提示"
+  },
+  "popup__statusSetActive": {
+    "message": "已设为当前",
+    "description": "设为当前成功消息"
+  },
+  "popup__confirmDeleteProfile": {
+    "message": "确定要删除 \"$1\" 吗？",
+    "description": "确认删除配置消息（带占位符）"
+  },
+  "popup__profileNameEmpty": {
+    "message": "未命名",
+    "description": "未命名配置占位"
+  },
+  "popup__defaultProfileName": {
+    "message": "配置 $1",
+    "description": "默认配置名称（带序号）"
   },
   "popup__language": {
     "message": "语言",
@@ -316,7 +396,7 @@
     "description": "Footer 版本信息（带占位符）"
   },
   "error__apiConfigMissing": {
-    "message": "API 配置缺失，请在设置中配置 API 密钥和模型。",
+    "message": "API 配置缺失，请新增配置并设为当前。",
     "description": "API 配置缺失时的错误消息"
   },
   "error__emptyApiResponse": {
