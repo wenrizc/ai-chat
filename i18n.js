@@ -1,4 +1,21 @@
 function t(key, substitutions = []) {
+  // Handle named placeholders (object format)
+  if (substitutions && typeof substitutions === 'object' && !Array.isArray(substitutions)) {
+    // Chrome getMessage only supports positional substitutions, so do manual replacement.
+    try {
+      let result = chrome.i18n.getMessage(key) || key;
+      for (const [name, value] of Object.entries(substitutions)) {
+        const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        result = result.replace(new RegExp(`\\$${escapedName}\\$`, 'g'), value);
+      }
+      return result;
+    } catch (error) {
+      console.warn(`Translation not found for key: ${key}`, error);
+      return key;
+    }
+  }
+
+  // Handle positional placeholders (array format)
   if (!Array.isArray(substitutions)) {
     substitutions = [substitutions];
   }

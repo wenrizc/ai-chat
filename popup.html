@@ -630,6 +630,8 @@
   <div class="tab-content active" id="configTab">
     <div class="config-toolbar">
       <button id="addProfileBtn" class="btn btn-primary btn-small" data-i18n="popup__btnAddProfile">New</button>
+      <button id="exportProfilesBtn" class="btn btn-secondary btn-small" data-i18n="config__btnExport">Export</button>
+      <button id="importProfilesBtn" class="btn btn-secondary btn-small" data-i18n="config__btnImport">Import</button>
       <div class="config-toolbar-right">
         <label for="activeProfileSelect" data-i18n="popup__labelActiveProfile">Default</label>
         <select id="activeProfileSelect"></select>
@@ -683,6 +685,8 @@
   <div class="tab-content" id="promptsTab">
     <div class="config-toolbar">
       <button id="addPromptBtn" class="btn btn-primary btn-small" data-i18n="prompt__btnAdd">New</button>
+      <button id="exportPromptsBtn" class="btn btn-secondary btn-small" data-i18n="config__btnExport">Export</button>
+      <button id="importPromptsBtn" class="btn btn-secondary btn-small" data-i18n="config__btnImport">Import</button>
       <div class="config-toolbar-right">
         <label for="defaultPromptSelect" data-i18n="prompt__defaultLabel">Default</label>
         <select id="defaultPromptSelect">
@@ -733,6 +737,10 @@
   <div class="footer" id="footer">
     AI Multi-Window Extension v1.0.0
   </div>
+
+  <!-- Hidden file inputs for import -->
+  <input type="file" id="importProfilesInput" accept=".json" style="display: none;" />
+  <input type="file" id="importPromptsInput" accept=".json" style="display: none;" />
 
   <div class="modal" id="exportModal">
     <div class="modal-content">

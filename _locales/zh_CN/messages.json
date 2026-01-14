@@ -470,5 +470,55 @@
   "prompt__defaultName": {
     "message": "提示词 $1",
     "description": "默认提示词名称（带序号）"
+  },
+  "config__btnExport": {
+    "message": "导出",
+    "description": "导出按钮"
+  },
+  "config__btnImport": {
+    "message": "导入",
+    "description": "导入按钮"
+  },
+  "config__errorNoProfiles": {
+    "message": "没有可导出的配置",
+    "description": "没有可导出的配置时错误消息"
+  },
+  "config__errorNoPrompts": {
+    "message": "没有可导出的提示词",
+    "description": "没有可导出的提示词时错误消息"
+  },
+  "config__errorInvalidFormat": {
+    "message": "无效的文件格式",
+    "description": "无效文件格式的错误消息"
+  },
+  "config__errorInvalidProfile": {
+    "message": "无效的配置数据",
+    "description": "无效配置数据的错误消息"
+  },
+  "config__errorInvalidPrompt": {
+    "message": "无效的提示词数据",
+    "description": "无效提示词数据的错误消息"
+  },
+  "config__errorImportFailed": {
+    "message": "导入失败",
+    "description": "导入失败时的错误消息"
+  },
+  "config__statusExported": {
+    "message": "已导出 $1 项",
+    "description": "导出成功消息（带数量）"
+  },
+  "config__statusImported": {
+    "message": "已添加 $addedCount$ 项，更新 $updatedCount$ 项",
+    "description": "导入成功消息（带数量）",
+    "placeholders": {
+      "addedCount": {
+        "content": "$1",
+        "example": "3"
+      },
+      "updatedCount": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
   }
 }

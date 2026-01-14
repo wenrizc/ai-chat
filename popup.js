@@ -1,7 +1,6 @@
 const STORAGE_KEYS = {
   profiles: 'apiProfiles',
-  activeProfileId: 'activeApiProfileId',
-  legacy: ['apiUrl', 'apiKey', 'modelName']
+  activeProfileId: 'activeApiProfileId'
 };
 
 const DEFAULT_API_URL = 'https://api.openai.com/v1';
@@ -14,6 +13,9 @@ const elements = {
   profileName: document.getElementById('profileName'),
   profileList: document.getElementById('profileList'),
   addProfileBtn: document.getElementById('addProfileBtn'),
+  exportProfilesBtn: document.getElementById('exportProfilesBtn'),
+  importProfilesBtn: document.getElementById('importProfilesBtn'),
+  importProfilesInput: document.getElementById('importProfilesInput'),
   activeProfileSelect: document.getElementById('activeProfileSelect'),
   toggleApiKeyBtn: document.getElementById('toggleApiKeyBtn'),
   copyApiKeyBtn: document.getElementById('copyApiKeyBtn'),
@@ -26,6 +28,9 @@ const elements = {
   // Prompts
   promptList: document.getElementById('promptList'),
   addPromptBtn: document.getElementById('addPromptBtn'),
+  exportPromptsBtn: document.getElementById('exportPromptsBtn'),
+  importPromptsBtn: document.getElementById('importPromptsBtn'),
+  importPromptsInput: document.getElementById('importPromptsInput'),
   defaultPromptSelect: document.getElementById('defaultPromptSelect'),
   promptName: document.getElementById('promptName'),
   promptContent: document.getElementById('promptContent'),
@@ -100,6 +105,11 @@ function setupTabs() {
 function setupConfigHandlers() {
   elements.saveBtn.addEventListener('click', saveProfile);
   elements.addProfileBtn.addEventListener('click', addProfile);
+  elements.exportProfilesBtn.addEventListener('click', exportProfiles);
+  elements.importProfilesBtn.addEventListener('click', () => {
+    elements.importProfilesInput.click();
+  });
+  elements.importProfilesInput.addEventListener('change', importProfiles);
   elements.deleteBtn.addEventListener('click', () => {
     const profile = getProfileById(selectedProfileId);
     if (!profile) return;
@@ -143,6 +153,11 @@ function setupConfigHandlers() {
 function setupPromptHandlers() {
   elements.savePromptBtn.addEventListener('click', savePrompt);
   elements.addPromptBtn.addEventListener('click', addPrompt);
+  elements.exportPromptsBtn.addEventListener('click', exportPrompts);
+  elements.importPromptsBtn.addEventListener('click', () => {
+    elements.importPromptsInput.click();
+  });
+  elements.importPromptsInput.addEventListener('change', importPrompts);
   elements.deletePromptBtn.addEventListener('click', () => {
     const prompt = getPromptById(selectedPromptId);
     if (!prompt) return;
@@ -212,44 +227,25 @@ async function loadProfiles() {
   try {
     const result = await chrome.storage.local.get([
       STORAGE_KEYS.profiles,
-      STORAGE_KEYS.activeProfileId,
-      ...STORAGE_KEYS.legacy
+      STORAGE_KEYS.activeProfileId
     ]);
 
     profiles = Array.isArray(result.apiProfiles) ? result.apiProfiles : [];
     activeProfileId = result.activeApiProfileId || null;
 
     if (profiles.length === 0) {
-      const hasLegacy = result.apiUrl || result.apiKey || result.modelName;
-      if (hasLegacy) {
-        const profile = {
-          id: generateId(),
-          name: getDefaultProfileName(1),
-          apiUrl: result.apiUrl || DEFAULT_API_URL,
-          apiKey: result.apiKey || '',
-          modelName: result.modelName || ''
-        };
-        profiles = [profile];
-        activeProfileId = profile.id;
-        selectedProfileId = profile.id;
-        await persistProfiles();
-        renderProfiles();
-        updateForm(profile);
-        setEmptyState(false);
-      } else {
-        activeProfileId = null;
-        selectedProfileId = null;
-        renderProfiles();
-        clearForm();
-        setEmptyState(true);
-      }
+      activeProfileId = null;
+      selectedProfileId = null;
+      renderProfiles();
+      clearForm();
+      setEmptyState(true);
       return;
-    } else {
-      const activeExists = profiles.some(profile => profile.id === activeProfileId);
-      if (!activeProfileId || !activeExists) {
-        activeProfileId = profiles[0].id;
-        await persistProfiles();
-      }
+    }
+
+    const activeExists = profiles.some(profile => profile.id === activeProfileId);
+    if (!activeProfileId || !activeExists) {
+      activeProfileId = profiles[0].id;
+      await persistProfiles();
     }
 
     selectedProfileId = activeProfileId || (profiles[0] && profiles[0].id);
@@ -269,20 +265,6 @@ async function persistProfiles() {
   await chrome.storage.local.set({
     apiProfiles: profiles,
     activeApiProfileId: activeProfileId
-  });
-  await syncLegacyConfig();
-}
-
-async function syncLegacyConfig() {
-  const activeProfile = getProfileById(activeProfileId);
-  if (!activeProfile) {
-    await chrome.storage.local.remove(STORAGE_KEYS.legacy);
-    return;
-  }
-  await chrome.storage.local.set({
-    apiUrl: activeProfile.apiUrl,
-    apiKey: activeProfile.apiKey,
-    modelName: activeProfile.modelName
   });
 }
 
@@ -590,6 +572,115 @@ function getProfileById(profileId) {
   return profiles.find(profile => profile.id === profileId);
 }
 
+// ===== Profile Import/Export Functions =====
+
+async function exportProfiles() {
+  try {
+    if (profiles.length === 0) {
+      showStatus(t('config__errorNoProfiles'), 'error');
+      return;
+    }
+
+    const exportData = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      profiles: profiles,
+      activeProfileId: activeProfileId
+    };
+
+    const content = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `api-profiles-${getTimestamp()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showStatus(t('config__statusExported', profiles.length), 'success');
+  } catch (error) {
+    console.error('Failed to export profiles:', error);
+    showStatus(t('popup__statusError'), 'error');
+  }
+}
+
+async function importProfiles(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Reset input to allow importing the same file again
+  event.target.value = '';
+
+  try {
+    const content = await file.text();
+    const importData = JSON.parse(content);
+
+    // Validate import data structure
+    if (!importData.profiles || !Array.isArray(importData.profiles)) {
+      showStatus(t('config__errorInvalidFormat'), 'error');
+      return;
+    }
+
+    // Validate each profile
+    for (const profile of importData.profiles) {
+      if (!profile.id || !profile.name) {
+        showStatus(t('config__errorInvalidProfile'), 'error');
+        return;
+      }
+    }
+
+    let updatedCount = 0;
+    let addedCount = 0;
+
+    // Merge profiles: same ID updates, different ID adds
+    for (const importedProfile of importData.profiles) {
+      const existingIndex = profiles.findIndex(p => p.id === importedProfile.id);
+      if (existingIndex !== -1) {
+        // Update existing profile
+        profiles[existingIndex] = importedProfile;
+        updatedCount++;
+      } else {
+        // Add new profile
+        profiles.push(importedProfile);
+        addedCount++;
+      }
+    }
+
+    // Update active profile ID if imported
+    if (importData.activeProfileId && profiles.some(p => p.id === importData.activeProfileId)) {
+      activeProfileId = importData.activeProfileId;
+    } else if (profiles.length > 0 && !activeProfileId) {
+      activeProfileId = profiles[0].id;
+    }
+
+    // Ensure selected profile is valid
+    if (!profiles.find(p => p.id === selectedProfileId)) {
+      selectedProfileId = activeProfileId || profiles[0]?.id || null;
+    }
+
+    await persistProfiles();
+    renderProfiles();
+
+    const selectedProfile = getProfileById(selectedProfileId);
+    if (selectedProfile) {
+      updateForm(selectedProfile);
+      setEmptyState(false);
+    } else {
+      clearForm();
+      setEmptyState(true);
+    }
+
+    const message = t('config__statusImported', [
+      String(addedCount),
+      String(updatedCount)
+    ]);
+    showStatus(message, 'success');
+  } catch (error) {
+    console.error('Failed to import profiles:', error);
+    showStatus(t('config__errorImportFailed'), 'error');
+  }
+}
+
 // ===== Prompt Functions =====
 
 async function loadPrompts() {
@@ -838,6 +929,117 @@ function getDefaultPromptName(index) {
 
 function getPromptById(promptId) {
   return prompts.find(prompt => prompt.id === promptId);
+}
+
+// ===== Prompt Import/Export Functions =====
+
+async function exportPrompts() {
+  try {
+    if (prompts.length === 0) {
+      showPromptStatus(t('config__errorNoPrompts'), 'error');
+      return;
+    }
+
+    const exportData = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      prompts: prompts,
+      defaultPromptId: defaultPromptId
+    };
+
+    const content = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `prompts-${getTimestamp()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showPromptStatus(t('config__statusExported', prompts.length), 'success');
+  } catch (error) {
+    console.error('Failed to export prompts:', error);
+    showPromptStatus(t('popup__statusError'), 'error');
+  }
+}
+
+async function importPrompts(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Reset input to allow importing the same file again
+  event.target.value = '';
+
+  try {
+    const content = await file.text();
+    const importData = JSON.parse(content);
+
+    // Validate import data structure
+    if (!importData.prompts || !Array.isArray(importData.prompts)) {
+      showPromptStatus(t('config__errorInvalidFormat'), 'error');
+      return;
+    }
+
+    // Validate each prompt
+    for (const prompt of importData.prompts) {
+      if (!prompt.id || !prompt.name) {
+        showPromptStatus(t('config__errorInvalidPrompt'), 'error');
+        return;
+      }
+    }
+
+    let updatedCount = 0;
+    let addedCount = 0;
+
+    // Merge prompts: same ID updates, different ID adds
+    for (const importedPrompt of importData.prompts) {
+      const existingIndex = prompts.findIndex(p => p.id === importedPrompt.id);
+      if (existingIndex !== -1) {
+        // Update existing prompt
+        prompts[existingIndex] = importedPrompt;
+        updatedCount++;
+      } else {
+        // Add new prompt
+        prompts.push(importedPrompt);
+        addedCount++;
+      }
+    }
+
+    // Update default prompt ID if imported and valid
+    if (importData.defaultPromptId && prompts.some(p => p.id === importData.defaultPromptId)) {
+      defaultPromptId = importData.defaultPromptId;
+      await chrome.storage.local.set({ default_system_prompt_id: defaultPromptId });
+    } else if (prompts.length > 0 && !defaultPromptId) {
+      // Keep existing default or set to null
+      defaultPromptId = null;
+    }
+
+    // Ensure selected prompt is valid
+    if (!prompts.find(p => p.id === selectedPromptId)) {
+      selectedPromptId = defaultPromptId || prompts[0]?.id || null;
+    }
+
+    await persistPrompts();
+    renderPrompts();
+
+    const selectedPrompt = getPromptById(selectedPromptId);
+    if (selectedPrompt) {
+      updatePromptForm(selectedPrompt);
+      setPromptEmptyState(false);
+    } else {
+      clearPromptForm();
+      setPromptEmptyState(true);
+    }
+
+    const message = t('config__statusImported', [
+      String(addedCount),
+      String(updatedCount)
+    ]);
+    showPromptStatus(message, 'success');
+  } catch (error) {
+    console.error('Failed to import prompts:', error);
+    showPromptStatus(t('config__errorImportFailed'), 'error');
+  }
 }
 
 function showPromptStatus(message, type = 'success') {

@@ -470,5 +470,55 @@
   "prompt__defaultName": {
     "message": "Prompt $1",
     "description": "Default prompt name with index"
+  },
+  "config__btnExport": {
+    "message": "Export",
+    "description": "Export button"
+  },
+  "config__btnImport": {
+    "message": "Import",
+    "description": "Import button"
+  },
+  "config__errorNoProfiles": {
+    "message": "No profiles to export",
+    "description": "Error message when no profiles to export"
+  },
+  "config__errorNoPrompts": {
+    "message": "No prompts to export",
+    "description": "Error message when no prompts to export"
+  },
+  "config__errorInvalidFormat": {
+    "message": "Invalid file format",
+    "description": "Error message for invalid file format"
+  },
+  "config__errorInvalidProfile": {
+    "message": "Invalid profile data",
+    "description": "Error message for invalid profile data"
+  },
+  "config__errorInvalidPrompt": {
+    "message": "Invalid prompt data",
+    "description": "Error message for invalid prompt data"
+  },
+  "config__errorImportFailed": {
+    "message": "Import failed",
+    "description": "Error message when import fails"
+  },
+  "config__statusExported": {
+    "message": "Exported $1 items",
+    "description": "Success message for export with count"
+  },
+  "config__statusImported": {
+    "message": "Added $addedCount$, updated $updatedCount$ items",
+    "description": "Success message for import with counts",
+    "placeholders": {
+      "addedCount": {
+        "content": "$1",
+        "example": "3"
+      },
+      "updatedCount": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
   }
 }
