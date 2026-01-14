@@ -17,10 +17,11 @@ AI Multi-Window Chat lets you open multiple draggable chat windows on any page, 
 ## Features
 
 - **Multi-Window Chat** - Open multiple independent chat windows at once
-- **Floating Windows** - Drag, resize, minimize, close, and rename by clicking the title
+- **Floating Windows** - Drag, resize, minimize, and close
 - **Selection Toolbar** - Highlight text to launch a new chat with the selection
 - **History Management** - Auto-save, reopen, delete, and export chats
-- **Markdown Export** - Export a single chat or all chats as Markdown
+- **Multiple Export Formats** - Export chats as Markdown (.md) or plain text (.txt)
+- **Prompt Management** - Create, edit, delete, import, and export custom system prompts
 - **OpenAI Compatible** - Works with any OpenAI-compatible API endpoint
 
 ## Install (Developer Mode)
@@ -31,7 +32,7 @@ AI Multi-Window Chat lets you open multiple draggable chat windows on any page, 
    - `npm run build` 
 3. Open Chrome and go to `chrome://extensions/`
 4. Enable "Developer mode" (top right)
-5. Click "Load unpacked" and select the repo root folder (for example, `ai-chat`)
+5. Click "Load unpacked" and select the release folder
 
 ## Configure API
 
@@ -48,16 +49,7 @@ AI Multi-Window Chat lets you open multiple draggable chat windows on any page, 
 - Press `Alt+N` to open a new chat window with the current selection.
 - Click the window title to rename it.
 - Open the **History** tab to reopen, export, or delete chats.
-
-## Build Notes
-
-- `build.mjs` bundles `background.js` to `dist/background.js` using esbuild.
-- `manifest.json` points the service worker to `dist/background.js`, so the build step is required.
-
-## Permissions
-
-- `storage` stores settings and chat history locally
-- `activeTab` and `host_permissions` (`<all_urls>`) enable the selection toolbar on pages
+- Use the **Prompts** tab to manage custom system prompts for your conversations.
 
 ## License
 

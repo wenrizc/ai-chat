@@ -24,7 +24,8 @@ const buildOptions = [
     platform: 'browser',
     target: 'es2020',
     outfile: path.join(distDir, 'background.js'),
-    sourcemap: true
+    sourcemap: true,
+    legalComments: 'inline'
   },
   {
     entryPoints: [path.join(rootDir, 'chat-window.js')],
@@ -33,7 +34,8 @@ const buildOptions = [
     platform: 'browser',
     target: 'es2020',
     outfile: path.join(distDir, 'chat-window.js'),
-    sourcemap: true
+    sourcemap: true,
+    legalComments: 'inline'
   }
 ];
 
@@ -119,7 +121,9 @@ async function prepareRelease() {
     'styles.css',
     'i18n.js',
     'content.js',
-    'vendor/remove-markdown.js'
+    'vendor/remove-markdown.js',
+    'LICENSE',
+    'THIRD_PARTY_LICENSES.md'
   ];
 
   for (const dir of dirsToCopy) {

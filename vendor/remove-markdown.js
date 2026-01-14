@@ -1,4 +1,12 @@
-// remove-markdown v0.5.0 (MIT)
+/*!
+ * remove-markdown v0.5.0
+ * https://github.com/stiang/remove-markdown
+ *
+ * Copyright (c) 2015 Stian Grytøyr
+ * Licensed under the MIT License
+ *
+ * The full license text can be found in THIRD_PARTY_LICENSES.md
+ */
 (function(root) {
   function removeMarkdown(md, options) {
     options = options || {};
