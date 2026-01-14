@@ -118,7 +118,8 @@ async function prepareRelease() {
     'chat-window.css',
     'styles.css',
     'i18n.js',
-    'content.js'
+    'content.js',
+    'vendor/remove-markdown.js'
   ];
 
   for (const dir of dirsToCopy) {

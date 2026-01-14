@@ -183,6 +183,10 @@
     "message": "Markdown (.md)",
     "description": "Markdown 导出选项"
   },
+  "history__exportFormatText": {
+    "message": "文本 (.txt)",
+    "description": "纯文本导出选项"
+  },
   "history__btnView": {
     "message": "查看",
     "description": "查看按钮"

@@ -37,6 +37,7 @@
     "katex": "^0.16.27",
     "marked": "^17.0.1",
     "marked-katex-extension": "^5.1.6",
-    "openai": "^4.0.0"
+    "openai": "^4.0.0",
+    "remove-markdown": "^0.5.0"
   }
 }

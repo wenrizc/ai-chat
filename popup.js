@@ -188,7 +188,7 @@ function setupHistoryHandlers() {
 
   document.querySelectorAll('.export-option').forEach(option => {
     option.addEventListener('click', () => {
-      exportChat();
+      exportChat(option.dataset.format);
     });
   });
 
@@ -632,12 +632,7 @@ function renderPrompts() {
 
   if (prompts.length === 0) {
     elements.promptList.classList.add('empty');
-    elements.promptList.innerHTML = `
-      <div class="history-empty">
-        <div class="history-empty-icon">📝</div>
-        <div data-i18n="prompt__empty">${t('prompt__empty')}</div>
-      </div>
-    `;
+    elements.promptList.innerHTML = '';
   } else {
     elements.promptList.classList.remove('empty');
     elements.promptList.innerHTML = prompts.map(prompt => {
@@ -996,7 +991,7 @@ async function clearAllHistory() {
   }
 }
 
-async function exportChat() {
+async function exportChat(format = 'markdown') {
   closeModal('exportModal');
 
   try {
@@ -1005,11 +1000,12 @@ async function exportChat() {
 
     let content = '';
     let filename = '';
-    const type = 'text/markdown';
+    const exportFormat = format === 'text' ? 'text' : 'markdown';
+    const type = exportFormat === 'text' ? 'text/plain' : 'text/markdown';
 
     if (currentChatId === 'all') {
       content = exportAllAsMarkdown(history);
-      filename = `ai-chats-all-${getTimestamp()}.md`;
+      filename = `ai-chats-all-${getTimestamp()}.${exportFormat === 'text' ? 'txt' : 'md'}`;
     } else {
       const chat = history.find(c => c.chatId === currentChatId);
       if (!chat) {
@@ -1018,7 +1014,11 @@ async function exportChat() {
       }
 
       content = exportSingleAsMarkdown(chat);
-      filename = `ai-chat-${getTimestamp()}.md`;
+      filename = `ai-chat-${getTimestamp()}.${exportFormat === 'text' ? 'txt' : 'md'}`;
+    }
+
+    if (exportFormat === 'text') {
+      content = toPlainText(content);
     }
 
     const blob = new Blob([content], { type });
@@ -1072,6 +1072,13 @@ function exportAllAsMarkdown(history) {
   });
 
   return content;
+}
+
+function toPlainText(markdown) {
+  if (typeof removeMarkdown !== 'function') {
+    return markdown;
+  }
+  return removeMarkdown(markdown);
 }
 
 function getRelativeTime(isoString) {

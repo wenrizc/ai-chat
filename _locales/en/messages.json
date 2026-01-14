@@ -183,6 +183,10 @@
     "message": "Markdown (.md)",
     "description": "Markdown export option"
   },
+  "history__exportFormatText": {
+    "message": "Text (.txt)",
+    "description": "Text export option"
+  },
   "history__btnView": {
     "message": "View",
     "description": "View button"
