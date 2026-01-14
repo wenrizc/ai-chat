@@ -36,6 +36,15 @@
 
 ### 安装步骤
 
+**方式一：从 GreasyFork 安装（推荐）**
+
+1. 在浏览器中安装 Tampermonkey 或兼容的脚本管理器
+2. 访问 [GreasyFork: AI 多窗口对话](https://greasyfork.org/zh-CN/scripts/562658-ai-multi-window-chat)
+3. 点击"安装此脚本"按钮
+4. 根据提示确认安装
+
+**方式二：从 GitHub 安装**
+
 1. 在浏览器中安装 Tampermonkey 或兼容的脚本管理器
 2. 在 GitHub 上打开 [`ai-multi-window-chat.js`](ai-multi-window-chat.js) 的原始文件视图
 3. 点击脚本管理器中的"安装"按钮

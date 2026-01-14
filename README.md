@@ -36,6 +36,15 @@ This is the **Tampermonkey branch** of AI Multi-Window Chat. It provides the sam
 
 ### Installation Steps
 
+**Option 1: Install from GreasyFork (Recommended)**
+
+1. Install Tampermonkey or a compatible userscript manager for your browser
+2. Visit [GreasyFork: AI Multi-Window Chat](https://greasyfork.org/zh-CN/scripts/562658-ai-multi-window-chat)
+3. Click the "Install this script" button
+4. Confirm the installation when prompted
+
+**Option 2: Install from GitHub**
+
 1. Install Tampermonkey or a compatible userscript manager for your browser
 2. Open [`ai-multi-window-chat.js`](ai-multi-window-chat.js) in raw view
 3. Click "Install" in your userscript manager
