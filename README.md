@@ -28,6 +28,12 @@ AI Multi-Window Chat lets you open multiple draggable chat windows on any page, 
 
 ## Install
 
+### Install from Chrome Web Store
+
+Install directly from the Chrome Web Store:
+
+- https://chromewebstore.google.com/detail/ai-multi-window-chat/jeegcgffcgpeojhgjmgmjahhgdmcnacm?hl=en-US
+
 ### Quick Install
 
 1. Download the latest release package from the [Releases](https://github.com/wenrizc/AI-Multi-Window-Chat/releases) page
